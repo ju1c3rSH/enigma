@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.setting.SettingActivity">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="homes.gensokyo.enigma.ui.setting.SettingViewModel" />
+    </data>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 输入学校关键词 -->
+            <TextView
+                android:id="@+id/LKSTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请输入学校名称"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:paddingBottom="16dp"
+                android:gravity="center"
+                android:layout_gravity="center" />
+
+            <!-- 学校搜索输入框 -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ET_CPName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your school"
+                android:inputType="text"
+                android:paddingBottom="16dp"
+                android:text="@={viewModel.schoolInput}" />
+
+            <!-- 学校选择 RecyclerView -->
+
+            <!-- 班别输入框 -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="176dp"
+                android:visibility="@{viewModel.isSchoolListVisible ? View.VISIBLE : View.GONE}"
+                app:adapter="@{viewModel.schoolAdapter}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_school_select" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your class"
+                android:visibility="@{viewModel.isSchoolListVisible ? View.GONE : View.VISIBLE}">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ET_class"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- 姓名输入框 -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your name"
+                android:visibility="@{viewModel.isSchoolListVisible ? View.GONE : View.VISIBLE}">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ET_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
+</layout>

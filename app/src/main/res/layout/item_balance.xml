@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<homes.gensokyo.enigma.widget.ZeroLineLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:clickable="true"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="7dp"
+    android:background="@drawable/bg_item"
+    android:paddingTop="15dp"
+    android:paddingBottom="16dp">
+
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:adjustViewBounds="true"
+        android:maxHeight="50dp"
+        android:src="@drawable/it_message" />
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <!-- 第一个 TextView -->
+
+        <!-- 第二个 TextView -->
+
+        <TextView
+            android:id="@+id/tv_amount"
+            android:layout_width="160dp"
+            android:layout_height="25dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="90dp"
+            android:ellipsize="marquee"
+            android:includeFontPadding="false"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:text="Now Loading..."
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Another Text"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <!-- 时间栏 -->
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="少女祈祷中"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</homes.gensokyo.enigma.widget.ZeroLineLayout>

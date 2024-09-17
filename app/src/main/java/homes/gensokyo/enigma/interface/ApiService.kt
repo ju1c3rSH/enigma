@@ -1,0 +1,73 @@
+package homes.gensokyo.enigma.`interface`
+import androidx.room.Query
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+
+
+import retrofit2.Response
+import retrofit2.http.*
+
+interface ApiService {
+//TODO 这一块有很大弊病。可以通过设置不同的client的不同baseURl实现解耦。
+    @GET
+    suspend fun fetchRole(
+        @Url url: String,
+        @HeaderMap headers: Map<String, String>
+    ): Response<String>
+
+    @POST
+    suspend fun doLogin(
+        @Url url: String,
+        @HeaderMap headers: Map<String, String>,
+        @Body requestBody: String
+    ): Response<String>
+
+    @GET
+    suspend fun fetchStudents(
+        @Url url: String,
+        @HeaderMap headers: Map<String, String>
+    ): Response<String>
+
+
+    @GET
+    suspend fun fetchBalance(
+        @Url url: String,
+        @HeaderMap headers: Map<String, String>
+    ): Response<String>
+
+
+    @POST
+    @Headers("Content-Type: application/json")
+    suspend fun fetchMemberFlow(
+        @Url url: String,
+        @HeaderMap headers: Map<String, String>,
+        @Body requestBody: String
+    ): Response<String>
+
+    @GET
+    suspend fun fetchAllowedSchoolList(
+        @Url url: String,
+        @HeaderMap headers: Map<String, String>
+        ): Response<String>
+
+    @GET
+    suspend fun fetchAllNotGraduateClasses4Tenant(
+        @Url url: String,
+        @HeaderMap headers: Map<String, String>
+    ): Response<String>
+
+    @GET
+    suspend fun fetchStudentDetails(
+        @Url url: String,
+        @QueryMap qm: Map<String, String>,
+        @HeaderMap headers: Map<String, String>
+    ): Response<String>
+
+}
+
+annotation class cipherText
+
+
+
+

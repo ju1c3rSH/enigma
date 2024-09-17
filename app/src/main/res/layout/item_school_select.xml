@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <!-- 这是您的ViewModel或任何用于数据绑定的对象 -->
+        <variable
+            name="viewModel"
+            type="homes.gensokyo.enigma.ui.setting.SettingViewModel" />
+        <variable
+            name="school"
+            type="homes.gensokyo.enigma.bean.School" />
+        <variable
+            name="clickListener"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> viewModel.onSchoolSelected(school)}">
+
+        <TextView
+            android:id="@+id/tv_school_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:text="@{school.schoolName}" />
+    </LinearLayout>
+</layout>

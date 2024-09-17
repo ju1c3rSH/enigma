@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">智威校园</string>
+    <string name="navigation_title_home">智威校园EX·主页</string>
+    <string name="navigation_title_dashboard">智威校园EX·仪表板</string>
+    <string name="navigation_title_notifications">智威校园EX·通知</string>
+    <string name="title_home">主页</string>
+    <string name="title_dashboard">仪表板</string>
+    <string name="title_notifications">通知</string>
+    <string name="now_loading">Now Loading...</string>
+    <string name="ShaoNvQiDaoZhong">少女祈祷中</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+</resources>
