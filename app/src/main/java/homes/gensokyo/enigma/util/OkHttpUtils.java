@@ -21,6 +21,7 @@ public class OkHttpUtils {
 
 //https://juejin.cn/post/7276674188214796328?searchId=20230911202828951345C42B9EB346C848
 
+//旧java代码 已弃用
     private static final List<Cookie> cookies = new ArrayList<>();
     private static final OkHttpClient CLIENT = new OkHttpClient.Builder()
             .cookieJar(new MyCookieJar())

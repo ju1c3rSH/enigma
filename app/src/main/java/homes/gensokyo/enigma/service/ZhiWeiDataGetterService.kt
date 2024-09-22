@@ -29,13 +29,9 @@ class ZhiWeiDataGetterService : Service() {
 
         override fun onCreate() {
             super.onCreate()
+            //val apiService = NetworkUtils.retrofit.create(ApiService::class.java)
 
-
-            val apiService = NetworkUtils.retrofit.create(ApiService::class.java)
-
-            serviceScope.launch {
-                fetchData() // Call your suspending function here
-            }
+            /*
             val memberFlowRequest = MemberFlowJsonBuilder(
                 get("kidUuid","1111"),
                 listOf(2, 5, 6, 7),
@@ -45,9 +41,14 @@ class ZhiWeiDataGetterService : Service() {
                 DateUtils.Date2Str(-30),
                 DateUtils.Date2Str(1)
             )
-            CoroutineScope(Dispatchers.IO).launch {
-                val result = repository.fetchMemberFlow(memberFlowRequest,AppConstants.headerMap)
 
+            serviceScope.launch {
+                val result = repository.fetchMemberFlow(memberFlowRequest,AppConstants.headerMap)
+            }
+            TODO 暂时没用上
+             */
+            serviceScope.launch {
+                fetchData()
             }
         }
 
@@ -57,8 +58,7 @@ class ZhiWeiDataGetterService : Service() {
 
 
         suspend private fun fetchData() {
-            val executor = Executors.newSingleThreadExecutor()
-            executor.execute {
+
                 serviceScope.launch {
                     try {
                         val cipherText = CiperTextUtil.encrypt(get("wxOaOpenid","sss"))//这些默认值也许可以更好
@@ -87,15 +87,14 @@ class ZhiWeiDataGetterService : Service() {
                             listOf(2, 5, 6, 7),
                             7,
                             1,
-                            100,
-                            DateUtils.Date2Str(-30),
+                            200,
+                            DateUtils.Date2Str(-30,true),
                             DateUtils.Date2Str(1)
                         )
                         val resultMemberFlow =
                             repository.fetchMemberFlow(memberFlowRequest, AppConstants.headerMap)
                         resultMemberFlow?.let {
                             Log.i("DataService", "Received MemberFlow info: $it")
-
                         }
 
                     } catch (e: IOException) {
@@ -103,6 +102,6 @@ class ZhiWeiDataGetterService : Service() {
                     }
                 }
             }
-    }
+
 }
 

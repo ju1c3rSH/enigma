@@ -41,9 +41,7 @@ class ConsumeHistoryHolder(
         binding.tvAmount.text = "消费： ${memberFlow.amount.toString()} "
         binding.tvBalance.text ="余额： ${memberFlow.balance.toString()} "
         binding.tvTime.text = memberFlow.consumeTime
-
         binding.executePendingBindings()
-
         binding.root.setOnClickListener {
             //TODO 加上json'页
         }

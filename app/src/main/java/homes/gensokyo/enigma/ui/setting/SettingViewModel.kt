@@ -1,20 +1,16 @@
 package homes.gensokyo.enigma.ui.setting
 
-import android.R
 import android.util.Log
-import android.widget.ArrayAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.CreationExtras
 import homes.gensokyo.enigma.MainActivity
-import homes.gensokyo.enigma.MainApplication
 import homes.gensokyo.enigma.adapter.SchoolAdapter
-import homes.gensokyo.enigma.bean.ClassBean
 import homes.gensokyo.enigma.bean.GradeBean
 import homes.gensokyo.enigma.bean.School
 import homes.gensokyo.enigma.util.AppConstants
 import homes.gensokyo.enigma.util.SettingUtils.put
+import homes.gensokyo.enigma.util.TextUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,6 +21,13 @@ data class ClassItem(val classId: Int, val className: String)
 class SettingViewModel : ViewModel() {
 
     private var _selectedClassId = MutableLiveData<Int>()
+
+    private val _inputtuedName = MutableLiveData<String>()
+    val inputtedName: LiveData<String> = _inputtuedName
+
+    private val _inputtedCarNumber = MutableLiveData<String>()
+    val inputtedCarNumber: LiveData<String> = _inputtedCarNumber
+
 
     private val _selectedGradeId = MutableLiveData<Int>()
     val selectedGradeId: LiveData<Int> = _selectedGradeId
@@ -97,7 +100,7 @@ class SettingViewModel : ViewModel() {
         }
         return null
     }
-    fun submitStudentData(enteredName: String, selectedClassId: Int) {
+    fun submitStudentData(enteredName: String, selectedClassId: Int,enteredCardNumber:String) {
         serviceScope.launch {
             try {
                 val result = MainActivity.repository.fetchStudentDetails(
@@ -105,15 +108,19 @@ class SettingViewModel : ViewModel() {
                     selectedClassId,
                     AppConstants.headerMap
                 )
-                if (resultGetClasses != null) {
-                    if (result != null) {
+
+
+
+                if (result == null){
+                    "请确认您输入的信息没有错误。".toast()
+
+                } else {
                         Log.i("SettingViewModel", "Received student info: ${result.studentId}")
                         put("isFirst", false)
                         put("kidUuid",result.uuid)
                         put("wxOaOpenid",result.parentStudents[0].parent.wxOaOpenid)
                     }
-                }
-            }catch (e:Exception){
+                } catch (e:Exception){
                 Log.e("SettingViewModel", "Error fetching student info: ${e.message}")
             }
         }

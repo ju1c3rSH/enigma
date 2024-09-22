@@ -8,7 +8,7 @@ import android.preference.PreferenceManager
 import homes.gensokyo.enigma.MainActivity.Companion.context
 
 object SettingUtils {
-    val DEVICE = "device"
+    //val DEVICE = "device"
     val sharedPreferences: SharedPreferences? =
         PreferenceManager.getDefaultSharedPreferences(context);
 

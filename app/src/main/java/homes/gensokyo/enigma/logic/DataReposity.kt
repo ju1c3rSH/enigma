@@ -130,6 +130,9 @@ class UserRepository {
         return try {
             val response = apiService.fetchStudentDetails(AppConstants.getListByStudentNameUrl,map, headerMap)
             if (response.isSuccessful) {
+                if (response.body()!!.isEmpty()){
+                    return null
+                }
                 //Log.i("DETAILS", response.body().toString())
                 val listType = object : TypeToken<List<Student>>() {}.type
                 val sul: List<Student> = gson.fromJson(response.body(), listType)
@@ -140,7 +143,7 @@ class UserRepository {
                 //val listType = object : TypeToken<List<Student>>() {}.type
                 //val detailIst:Student = gson.fromJson(response.body(), listType)
                 //return detailIst
-                null
+
             }else{
                 Log.e("fetchStudentDetails", "Error fetching ")
                 null

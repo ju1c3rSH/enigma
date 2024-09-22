@@ -147,11 +147,16 @@ class SettingActivity : AppCompatActivity() {
         }
 
         binding.button.setOnClickListener{
+           //val enteredName = settingViewModel.inputtedName.value
             val enteredName = binding.nameet.text.toString()
             val selectedClassId = settingViewModel.selectedGradeId.value
-            enteredName.toast()
-            if (enteredName.isNotEmpty() && selectedClassId != null) {
-                settingViewModel.submitStudentData(enteredName, selectedClassId)
+            val enteredCardNumber = binding.CrdNumber.text.toString()
+            enteredName?.toast()
+            Log.i("SettingActivity", "Name: $enteredName, ClassId: $selectedClassId")
+            if (enteredName!!.isNotEmpty() && selectedClassId != null ) {
+                if (enteredName != null) {
+                    settingViewModel.submitStudentData(enteredName, selectedClassId,enteredCardNumber)
+                }
                 Log.i("SettingActivity", "Name: $enteredName, ClassId: $selectedClassId")
                 //get("isFirst", "yes").toast()
                 SettingUtils.put("isFirst", false)
