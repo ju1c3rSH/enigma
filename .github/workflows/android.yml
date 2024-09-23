@@ -1,27 +1,27 @@
-name: Build & Publish Release APK
+name: Node CI
 
-on:
-  workflow_dispatch:
-  push:
-    tags:
-      - '*'
+on: [push]
 
 jobs:
-  Gradle:
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout code
-      uses: actions/checkout@v2
-    - name: setup jdk
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17
-    - name: Make Gradle executable
-      run: chmod +x ./gradlew
-    - name: Build Release APK
-      run: ./gradlew assembleRelease
-    - name: Releasing using Hub
-      uses: actions/upload-artifact@v3
-      with:
-          name: apk_file
-          path: ${{ github.workspace }}/app/build/outputs/apk/release
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: npm install, build, and test
+        run: |
+          npm install
+          npm run build --if-present
+          npm test
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-without-markdown
+          path: |
+            dist
+            !dist/**/*.md
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: output/test/code-coverage.html
