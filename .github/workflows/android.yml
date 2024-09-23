@@ -1,27 +1,31 @@
-name: Node CI
+name: Android CI/CD
 
-on: [push]
-
+on:
+  push:
+    branches:  master
 jobs:
-  build_and_test:
+  build:
+    name: Build and Test
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: npm install, build, and test
-        run: |
-          npm install
-          npm run build --if-present
-          npm test
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-without-markdown
-          path: |
-            dist
-            !dist/**/*.md
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v4
-        with:
-          name: code-coverage-report
-          path: output/test/code-coverage.html
+
+steps:
+- name: Checkout code
+  uses: actions/checkout@v2
+
+- name: Set up JDK 17
+  uses: actions/setup-java@v2
+  with:
+    distribution: 'adopt'
+    java-version: '17'
+
+- name: Build and test
+  run: |
+    chmod +x gradlew
+    ./gradlew assembleRelease
+    ./gradlew test
+
+- name: Upload APK
+  uses: actions/upload-artifact@v2
+  with:
+    name: app-release
+    path: app/build/outputs/apk/release/release.apk
