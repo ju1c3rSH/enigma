@@ -13,20 +13,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 class NetworkUtils {
 
     companion object {
-        // 实例化自定义的 CookieJar
         private val cookieJar = MyCookieJar()
-
-        // 创建 OkHttpClient 并设置 CookieJar
         private val client = OkHttpClient.Builder()
             .cookieJar(cookieJar)
             .build()
 
-        // 创建 Retrofit 实例
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl("http://wx.ivxiaoyuan.com") // 替换为你的实际 baseURL
-            .client(client) // 使用带有 CookieJar 的 OkHttpClient
-            .addConverterFactory(ScalarsConverterFactory.create()) // 允许返回 String 类型
-            .addConverterFactory(GsonConverterFactory.create()) // 允许使用 JSON 转换对象
+            .baseUrl("http://wx.ivxiaoyuan.com")
+            .client(client)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
     fun isNetworkAvailable(context: Context): Boolean {

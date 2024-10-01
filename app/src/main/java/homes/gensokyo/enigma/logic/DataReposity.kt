@@ -6,6 +6,8 @@ import com.google.gson.reflect.TypeToken
 import homes.gensokyo.enigma.MainActivity.Companion.apiService
 import homes.gensokyo.enigma.bean.GradeBean
 import homes.gensokyo.enigma.bean.MemberFlowJsonBuilder
+import homes.gensokyo.enigma.bean.QueryRequest
+import homes.gensokyo.enigma.bean.QueryResponse
 import homes.gensokyo.enigma.bean.School
 import homes.gensokyo.enigma.bean.Student
 import homes.gensokyo.enigma.bean.balanceBean
@@ -35,6 +37,23 @@ class UserRepository {
             null
         }
     }
+    suspend fun queryData(headerMap: Map<String, String>, request: QueryRequest):QueryResponse? {
+        return try {
+            val response = apiService.Query(headerMap, request)
+            if (response.isSuccessful) {
+                //Log.i("queryData", response.toString())
+                return gson.fromJson(response.body(), object : TypeToken<QueryResponse>() {}.type)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+
+
 
 
     suspend fun doLogin(headerMap: Map<String, String>): String? {

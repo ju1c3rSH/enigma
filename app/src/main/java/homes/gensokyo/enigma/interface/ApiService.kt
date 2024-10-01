@@ -1,5 +1,7 @@
 package homes.gensokyo.enigma.`interface`
 import androidx.room.Query
+import homes.gensokyo.enigma.bean.QueryRequest
+import homes.gensokyo.enigma.bean.QueryResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -16,6 +18,13 @@ interface ApiService {
     suspend fun fetchRole(
         @Url url: String,
         @HeaderMap headers: Map<String, String>
+    ): Response<String>
+
+    @POST("sc/student/h5/dynamicParentViewQuery/query")
+    @Headers("Content-Type: application/json")
+    suspend fun Query(
+        @HeaderMap headers: Map<String, String>,
+        @Body request: QueryRequest
     ): Response<String>
 
     @POST

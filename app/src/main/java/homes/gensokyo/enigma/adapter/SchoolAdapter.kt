@@ -40,9 +40,7 @@ class SchoolAdapter(private val vm: SettingViewModel, private var dataList: List
 class SchoolViewHolder(private val binding: ItemSchoolSelectBinding,private val vm: SettingViewModel) : RecyclerView.ViewHolder(binding.root) {
     fun bind(school: School) {
         binding.school = school
-
         binding.executePendingBindings()
-
         binding.tvSchoolName.text = school.schoolName
         /*
         binding.root.setOnClickListener{

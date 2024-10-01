@@ -121,6 +121,7 @@ class SettingViewModel : ViewModel() {
                         put("kidUuid",result.uuid)
                         put("wxOaOpenid",result.parentStudents[0].parent.wxOaOpenid)
                         put("studentName",enteredName)
+                        put("unilateralDeclarationCardNumber",enteredCardNumber)// 单方面声明的卡号
                     }
                 } catch (e:Exception){
                 Log.e("SettingViewModel", "Error fetching student info: ${e.message}")

@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
         lateinit var gson: Gson
-        lateinit var repository: UserRepository
-        lateinit var apiService : ApiService
+        var repository: UserRepository = MainApplication.repository
+        var apiService : ApiService = MainApplication.apiService
 
         // lateinit var application: Application
 
@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         context = this
         gson = Gson()
-        apiService = NetworkUtils.retrofit.create(ApiService::class.java)
-        repository = UserRepository()
+        //apiService = NetworkUtils.retrofit.create(ApiService::class.java)
+        //repository = UserRepository()
         // = NetworkUtils.retrofit.create(ApiService::class.java)
         if(get("isFirst",true)){
             startActivity(Intent(this, OOBEActivity::class.java))

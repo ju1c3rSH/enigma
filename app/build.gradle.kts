@@ -18,10 +18,10 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.1.0"
+        versionName = "1.5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionNameSuffix = "提拉米苏"
+        versionNameSuffix = "@蔓越莓"
     }
 
     buildTypes {
@@ -48,6 +48,9 @@ android {
 }
 
 dependencies {
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
     implementation("androidx.databinding:databinding-runtime:7.3.2")
     implementation( "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
     implementation("androidx.room:room-runtime:2.4.0")

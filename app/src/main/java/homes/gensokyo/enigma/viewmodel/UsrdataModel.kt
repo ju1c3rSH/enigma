@@ -1,17 +1,21 @@
 package homes.gensokyo.enigma.viewmodel
 
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import homes.gensokyo.enigma.MainApplication.Companion.context
 import homes.gensokyo.enigma.logic.logic.UserRepository
 import homes.gensokyo.enigma.bean.*
 import homes.gensokyo.enigma.util.CiperTextUtil
 import homes.gensokyo.enigma.util.AppConstants
 import homes.gensokyo.enigma.util.DateUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
+import homes.gensokyo.enigma.util.SettingUtils.sharedPreferences
+import homes.gensokyo.enigma.util.TextUtils.toast
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
@@ -34,6 +38,9 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
 
     private val _memberFlow = MutableLiveData<memberflowbean?>()
     val memberFlow : MutableLiveData<memberflowbean?> = _memberFlow
+
+    private val _queryData = MutableLiveData<QueryResponse>()
+    val queryData: LiveData<QueryResponse> = _queryData
 
 
 
@@ -84,6 +91,19 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                 val resultLogin = repository.doLogin(AppConstants.headerMap)
                 resultLogin?.let {
                 }
+                val qrBuild = QueryRequest.Builder().setPage(1)
+                    .setRows(30)
+                    .setCopyPersonCode(get("kidUuid","111"))
+                    .setTypeCode(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11))
+                    .build()
+                Log.i("queryData", "Query info: $qrBuild")
+
+                val resultQuery = repository.queryData(AppConstants.headerMap, qrBuild )!!
+                resultQuery?.let {
+                    Log.i("queryData", "Received Query info: $it")
+                }
+                _queryData.postValue(resultQuery)
+                //Log.i("queryData", "Received Query info: $resultQuery")
 
                 val resultKid = repository.fetchStudents(AppConstants.headerMap)
 
@@ -130,10 +150,37 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     )
                     repository.fetchMemberFlow(memberFlowRequest, AppConstants.headerMap)
                 }
+                fun restartApp() {
 
-                val resultBalance = resultBalanceDeferred.await()
+                    val packageManager = context.packageManager
+                    val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+                    val componentName = intent?.component
+                    val mainIntent = Intent.makeRestartActivityTask(componentName)
+                    context.startActivity(mainIntent)
+                    Runtime.getRuntime().exit(0)
+                }
+                val resultBalance = resultBalanceDeferred.await()!!
                 val resultMemberFlow = resultMemberFlowDeferred.await()
+                if(get("unilateralDeclarationCardNumber","fake") != resultBalance.cardNumber){
+                    //Log.i("UsrDataModel", get("unilateralDeclarationCardNumber","fake") + " != " + resultBalance.cardNumber)
 
+                    val editor = sharedPreferences!!.edit()
+                    editor.clear()
+                    editor.apply()
+                    "卡号不正确，强制退出！".toast()
+                    editor.clear()
+                    editor.commit()
+                    /*
+                    if (sharedPreferences.all.isEmpty()) {
+                        Log.d("Preferences", "清除成功")
+                    } else {
+                        Log.d("Preferences", "清除失败")
+                    }
+
+                     */
+
+                    restartApp()
+                }
 
 
 
