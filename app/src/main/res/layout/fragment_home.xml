@@ -1,177 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment"
+    tools:ignore="ExtraText">
+    tools:layout_editor_absoluteX="10dp"
+    tools:layout_editor_absoluteY="10dp">
 
-    <data>
+    <LinearLayout
+        android:id="@+id/nameItem"
+        android:layout_width="189dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_item"
+        android:orientation="horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.home.HomeFragment"
-        tools:ignore="ExtraText">
-        tools:layout_editor_absoluteX="10dp"
-        tools:layout_editor_absoluteY="10dp">
-
-        <LinearLayout
-            android:id="@+id/consumptionCountItem"
-            android:layout_width="189dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_item"
-            android:orientation="horizontal"
-            android:paddingTop="15dp"
-            android:paddingBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/text_home"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameItem">
-
-            <ImageView
-                android:layout_width="34dp"
-                android:layout_height="27dp"
-                android:src="@drawable/it_consumption_count" />
-
-            <TextView
-                android:id="@+id/card_cCount_textview"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:text="@string/now_loading"
-                android:textColor="@android:color/white"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/balanceItem"
-            android:layout_width="189dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_item"
-            android:orientation="horizontal"
-            android:paddingTop="15dp"
-            android:paddingBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/cardNumberItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="37dp"
-                android:layout_height="31dp"
-                android:src="@drawable/it_balance_1" />
-
-            <TextView
-                android:id="@+id/card_balance_textview"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:text="@string/now_loading"
-                android:textColor="@android:color/white"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/cardNumberItem"
-            android:layout_width="189dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_item"
-            android:orientation="horizontal"
-            android:paddingTop="15dp"
-            android:paddingBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/nameItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/balanceItem">
-
-            <ImageView
-                android:layout_width="37dp"
-                android:layout_height="31dp"
-                android:src="@drawable/it_card" />
-
-            <TextView
-                android:id="@+id/card_cardNumber_textview"
-                android:layout_width="0dp"
-                android:layout_height="42dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:text="@string/ShaoNvQiDaoZhong"
-                android:textColor="@android:color/white"
-                android:textSize="20sp" />
-        </LinearLayout>
+        <ImageView
+            android:layout_width="37dp"
+            android:layout_height="31dp"
+            android:src="@drawable/it_person" />
 
         <TextView
-            android:id="@+id/alphaTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="144dp"
-            android:text="alpha ver3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textclock" />
+            android:id="@+id/card_name_textview"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="@string/ShaoNvQiDaoZhong"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+    </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/nameItem"
-            android:layout_width="189dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_item"
-            android:orientation="horizontal"
-            android:paddingTop="15dp"
-            android:paddingBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/consumptionCountItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardNumberItem">
+    <LinearLayout
+        android:id="@+id/cardNumberItem"
+        android:layout_width="189dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_item"
+        android:orientation="horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameItem">
 
-            <ImageView
-                android:layout_width="37dp"
-                android:layout_height="31dp"
-                android:src="@drawable/it_person" />
-
-            <TextView
-                android:id="@+id/card_name_textview"
-                android:layout_width="0dp"
-                android:layout_height="42dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:text="@string/ShaoNvQiDaoZhong"
-                android:textColor="@android:color/white"
-                android:textSize="20sp" />
-        </LinearLayout>
+        <ImageView
+            android:layout_width="37dp"
+            android:layout_height="31dp"
+            android:src="@drawable/it_card" />
 
         <TextView
-            android:id="@+id/text_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/consumptionCountItem" />
+            android:id="@+id/card_cardNumber_textview"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="@string/ShaoNvQiDaoZhong"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+    </LinearLayout>
 
-        <TextClock
-            android:id="@+id/textclock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:format12Hour="HH:mm"
-            android:textSize="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_home" />
+    <LinearLayout
+        android:id="@+id/balanceItem"
+        android:layout_width="189dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_item"
+        android:orientation="horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardNumberItem">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+        <ImageView
+            android:layout_width="37dp"
+            android:layout_height="31dp"
+            android:src="@drawable/it_balance_1" />
+
+        <TextView
+            android:id="@+id/card_balance_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="@string/now_loading"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/consumptionCountItem"
+        android:layout_width="189dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_item"
+        android:orientation="horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/balanceItem">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="27dp"
+            android:src="@drawable/it_consumption_count_new" />
+
+        <TextView
+            android:id="@+id/card_cCount_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="@string/now_loading"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/consumptionCountItem" />
+
+    <TextClock
+        android:id="@+id/textclock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:format12Hour="HH:mm"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_home" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

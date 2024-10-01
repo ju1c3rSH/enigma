@@ -18,7 +18,7 @@ class MainApplication : Application() {
         lateinit var gson: Gson
         lateinit var repository: UserRepository
         lateinit var apiService : ApiService
-
+        lateinit var instance: MainApplication
         // lateinit var application: Application
 
 //TODO lateinit需要解决
@@ -28,7 +28,7 @@ class MainApplication : Application() {
         super.onCreate()
         context = this
         gson = Gson()
-
+        instance = this
         repository = UserRepository()
         apiService = NetworkUtils.retrofit.create(ApiService::class.java)
         MainActivity.context = applicationContext

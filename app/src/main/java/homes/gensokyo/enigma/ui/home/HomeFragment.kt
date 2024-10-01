@@ -27,8 +27,7 @@ class HomeFragment : Fragment() {
     }
     lateinit var state :
             DataState<UserDataBean>
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+
     private val binding get() = _binding!!
     private val serviceScope = CoroutineScope(Dispatchers.IO)
     override fun onCreateView(
@@ -46,13 +45,11 @@ class HomeFragment : Fragment() {
                     Log.i("HomeFragment", "Loading...")
                 }
                 is DataState.Success -> {
-                    // 成功获取数据，更新 UI
                     Log.i("HomeFragment", "Success: ${state.data}")
 
                     updateData(state.data)
                 }
                 is DataState.Error -> {
-                    // 显示错误信息
                     Log.e("HomeFragment", "Error: ${state.exception.message }")
                     //hideLoading()
                 }

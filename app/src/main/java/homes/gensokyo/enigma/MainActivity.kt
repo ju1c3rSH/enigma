@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -21,9 +24,10 @@ import homes.gensokyo.enigma.service.ZhiWeiDataGetterService
 import homes.gensokyo.enigma.ui.setting.SettingActivity
 import homes.gensokyo.enigma.util.NetworkUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
+import homes.gensokyo.enigma.viewmodel.SharedViewModel
 
 class MainActivity : AppCompatActivity() {
-
+    private val sharedViewModel: SharedViewModel by viewModels { ViewModelProvider.NewInstanceFactory() }
     private lateinit var binding: ActivityMainBinding
     companion object {
         @SuppressLint("StaticFieldLeak")
@@ -58,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+                R.id.navigation_home, R.id.navigation_dashboard,R.id.navigation_face_scan, R.id.navigation_mine
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

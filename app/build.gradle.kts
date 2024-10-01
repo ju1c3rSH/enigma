@@ -50,6 +50,8 @@ dependencies {
     implementation("androidx.databinding:databinding-runtime:7.3.2")
     implementation( "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
     implementation("androidx.room:room-runtime:2.4.0")
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.fragment.ktx)
     annotationProcessor("androidx.room:room-compiler:2.4.0")
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.4.0")

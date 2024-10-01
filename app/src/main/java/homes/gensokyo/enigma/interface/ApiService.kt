@@ -10,6 +10,8 @@ import retrofit2.http.*
 
 interface ApiService {
 //TODO 这一块有很大弊病。可以通过设置不同的client的不同baseURl实现解耦。
+
+    //todo 我去 大屎山
     @GET
     suspend fun fetchRole(
         @Url url: String,

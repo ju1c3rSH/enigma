@@ -18,8 +18,14 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_mine"
         android:name="homes.gensokyo.enigma.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_mine"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_face_scan"
+        android:name="homes.gensokyo.enigma.ui.faceScan.FaceScanFragment"
+        android:label="@string/face_scan_history"
+        tools:layout="@layout/fragment_face_scan" />
 </navigation>

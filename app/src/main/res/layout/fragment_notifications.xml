@@ -23,7 +23,7 @@
             android:src="@drawable/renko" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textView_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/imageView"
@@ -59,7 +59,7 @@
             android:id="@+id/textView_name_ENG"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textView"
+            android:layout_below="@id/textView_name"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="15dp"
@@ -85,13 +85,13 @@
         android:gravity="center">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button2"
+            android:id="@+id/about"
             style="@style/Widget.Material3.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:text="刷脸记录"
+            android:text="关于"
             app:cornerRadius="16dp"
             app:iconPadding="8dp"
             app:iconTint="@color/white"
@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:text="刷脸记录"
+            android:text="设置"
             app:cornerRadius="16dp"
             app:iconPadding="8dp"
             app:iconTint="@color/white"

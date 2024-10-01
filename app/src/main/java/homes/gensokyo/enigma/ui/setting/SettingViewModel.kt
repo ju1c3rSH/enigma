@@ -73,7 +73,7 @@ class SettingViewModel : ViewModel() {
             }
         }
     }
-    var resultGetClasses: List<GradeBean>? = emptyList()
+    private var resultGetClasses: List<GradeBean>? = emptyList()
     private fun fetchAllNotGraduateClasses(tenantId:Int): List<GradeBean>? {
         serviceScope.launch {
             try {
@@ -90,7 +90,7 @@ class SettingViewModel : ViewModel() {
                         gradeList.add(gradeItem)
                         //Log.i("SettingViewModel", "Added ClassItem: $classItem")
                     }
-                    Log.i("SettingViewModel", "Class list: ${gradeList}")
+                    Log.i("SettingViewModel", "Grade list: ${gradeList}")
                     _gradeNamesLiveData.postValue(gradeList)
                 }
 

@@ -40,12 +40,12 @@ class SettingActivity : AppCompatActivity() {
         var GradeSpinAdapter: ArrayAdapter<String> = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_dropdown_item,
-            mutableListOf()  // 空的可变列表
+            mutableListOf()
         )
         var ClassSpinAdapter: ArrayAdapter<String> = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_dropdown_item,
-            mutableListOf()  // 空的可变列表
+            mutableListOf()
         )
 
         val adpter = SchoolAdapter(settingViewModel,listOf<School>())
@@ -118,7 +118,7 @@ class SettingActivity : AppCompatActivity() {
                 Log.i("StET", "No class names available")
                 return@Observer
             }
-            Log.i("gradeName", "$gradeITEM")
+            Log.i("gradeName22", "$gradeITEM")
             val classNameList = gradeITEM.map { it.gradeName }
             GradeSpinAdapter.clear()
             GradeSpinAdapter.addAll(classNameList)

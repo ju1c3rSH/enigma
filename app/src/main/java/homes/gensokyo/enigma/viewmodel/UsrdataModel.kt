@@ -64,7 +64,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                 val cipherText = CiperTextUtil.encrypt(get("wxOaOpenid","000"))
                 val resultGetRole = repository.fetchRole(cipherText, AppConstants.headerMap)
                 resultGetRole?.let {
-
+                    Log.i("UsrMdl", "Received Role info: $it")
                 }
 
                 val resultLogin = repository.doLogin(AppConstants.headerMap)
@@ -80,14 +80,14 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                 val resultBalance = repository.fetchBalance(AppConstants.headerMap)
                 resultBalance?.let {
                 }
-
+                Log.i("startDat",  DateUtils.Date2Str(-10,true) )
                 val memberFlowRequest = MemberFlowJsonBuilder(
                     get("kidUuid","1111"),
                     listOf(2, 5, 6, 7),
                     7,
                     1,
                     100,
-                    DateUtils.Date2Str(-30),
+                    DateUtils.Date2Str(-10,true),
                     DateUtils.Date2Str(1)
                 )
                 val resultMemberFlow =
@@ -95,6 +95,9 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                 Log.i("DataService", "Received MemberFlow info: $resultMemberFlow")
                 if (resultBalance != null && resultKid != null) {
                     val studentName = resultKid.firstOrNull()?.studentName ?: "默认姓名"
+                    val headSculpture = resultKid.firstOrNull()?.headSculpture ?: ""
+                    val className = resultKid.firstOrNull()?.classes?.className ?: ""
+                    val studentNamePinyin = resultKid.firstOrNull()?.studentNamePinyin ?: ""
                     if (resultMemberFlow != null) {
                         Log.i("refreshData", resultMemberFlow.toString())
 
@@ -105,7 +108,11 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                                     balance = resultBalance.balance.toString(),
                                     studentName = studentName,
                                     cardNumber = resultBalance.cardNumber,
-                                    consumptionCount = resultMemberFlow.total.toString()
+                                    consumptionCount = resultMemberFlow.total.toString(),
+                                    studentNamePinyin = studentNamePinyin,
+                                    headSculpture = headSculpture,
+                                    className = className,
+
                                 )
 
                             )

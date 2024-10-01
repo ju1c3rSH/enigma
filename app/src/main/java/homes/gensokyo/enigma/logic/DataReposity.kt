@@ -12,7 +12,8 @@ import homes.gensokyo.enigma.bean.balanceBean
 import homes.gensokyo.enigma.bean.memberflowbean
 import homes.gensokyo.enigma.util.AppConstants
 import homes.gensokyo.enigma.util.SettingUtils.get
-import java.lang.reflect.Type
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.URLEncoder
 
 class UserRepository {
@@ -71,11 +72,11 @@ class UserRepository {
         return try {
             val response = apiService.fetchBalance(AppConstants.getBalance+ get("kidUuid","111"),headerMap)
             if (response.isSuccessful) {
-                Log.e("fetchBalance111", response.body().toString())
+                Log.i("fetchBalance111", response.body().toString())
                 return gson.fromJson(response.body(), balanceBean::class.java)
             } else {
                 // Handle error, e.g., throw an exception or return null
-                Log.e("fetchBalance", response.errorBody().toString())
+                Log.i("fetchBalance", response.errorBody().toString())
                 null
             }
         } catch (e: Exception) {
@@ -157,6 +158,9 @@ class UserRepository {
 
     suspend fun fetchMemberFlow(json: MemberFlowJsonBuilder, headerMap: Map<String, String>): memberflowbean? {
         return try {
+            if(get("isFirst", true)){
+                return memberflowbean(error = "Not been login")
+            }
             val postJson = gson.toJson(json)
             Log.i("fetchMemberFlow", "Requesting MemberFlow with JSON: $postJson and headers: $headerMap")
             val response = apiService.fetchMemberFlow(AppConstants.getMemberFlow, headerMap, postJson)
@@ -164,14 +168,14 @@ class UserRepository {
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 Log.i("fetchMemberFlow", "Successfully fetched MemberFlow: $responseBody")
-                gson.fromJson(responseBody, memberflowbean::class.java)
+                return  gson.fromJson(responseBody, memberflowbean::class.java)
             } else {
                 Log.e("fetchMemberFlow", "API call failed, Response Code: ${response.code()}, Response Message: ${response.message()}")
-                null
+                memberflowbean(error = "API call failed, Response Code: ${response.code()}, Response Message: ${response.message()}")
             }
         } catch (e: Exception) {
             Log.e("fetchMemberFlow", "Error while fetching MemberFlow", e)
-            null
+            memberflowbean(error = e.message)
         }
     }
 

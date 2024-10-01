@@ -19,7 +19,7 @@ class NetworkUtils {
 
         // 创建 Retrofit 实例
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl("https://us1.gensokyo.homes") // 替换为你的实际 baseURL
+            .baseUrl("http://wx.ivxiaoyuan.com") // 替换为你的实际 baseURL
             .client(client) // 使用带有 CookieJar 的 OkHttpClient
             .addConverterFactory(ScalarsConverterFactory.create()) // 允许返回 String 类型
             .addConverterFactory(GsonConverterFactory.create()) // 允许使用 JSON 转换对象
