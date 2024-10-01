@@ -1,35 +1,54 @@
-name: Release
+name: Android CI/CD
+
 on:
   push:
-    tags:
-      - "R*"
+    branches:
+      - master
 
 jobs:
   build:
+    name: Build, Test, and Sign APK
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 17
-      - uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: current
-          arguments: assembleRelease
-      - uses: r0adkll/sign-android-release@v1
-        id: sign_app
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-      - run: mv ${{steps.sign_app.outputs.signedReleaseFile}} LittleGooseOffice_$GITHUB_REF_NAME.apk
-      - uses: ncipollo/release-action@v1
-        with:
-          artifacts: "*.apk"
-          token: ${{ github.token }}
-          generateReleaseNotes: true
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '17'
+
+    - name: Decode keystore
+      run: |
+        echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > release.keystore
+
+    - name: Build and test
+      run: |
+        chmod +x gradlew
+        ./gradlew assembleRelease
+        ./gradlew test
+      env:
+        KEYSTORE_FILE_PATH: ${{ github.workspace }}/release.keystore
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+    - name: Sign app APK
+      uses: r0adkll/sign-android-release@v1
+      id: sign_app
+      with:
+        releaseDirectory: app/build/outputs/apk/release
+        signingKeyBase64: ${{ secrets.SIGNING_KEY }}  # Base64 编码的密钥
+        alias: ${{ secrets.ALIAS }}
+        keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
+      env:
+        BUILD_TOOLS_VERSION: "34.0.0"  # 可选，覆盖默认构建工具版本
+
+    - name: Upload signed APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: Signed app bundle
+        path: ${{ steps.sign_app.outputs.signedReleaseFile }}  # 使用签名后的 APK 路径
