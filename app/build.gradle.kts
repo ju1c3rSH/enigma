@@ -15,13 +15,12 @@ android {
 
     defaultConfig {
         applicationId = "homes.gensokyo.enigma"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
+        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionName = "half cooked pancake"
-        signingConfig = signingConfigs.getByName("debug")
     }
 
     buildTypes {
