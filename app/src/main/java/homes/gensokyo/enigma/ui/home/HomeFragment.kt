@@ -71,8 +71,6 @@ class HomeFragment : Fragment() {
         binding.cardNameTextview.text = userBalance.studentName
         binding.cardCardNumberTextview.text = userBalance.cardNumber
         binding.cardCCountTextview.text = userBalance.consumptionCount
-
-
     }
 
     override fun onDestroyView() {
