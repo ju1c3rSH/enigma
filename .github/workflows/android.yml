@@ -24,11 +24,14 @@ jobs:
       run: |
         echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > release.keystore
 
+    - name: Clean project
+      run: ./gradlew clean
+
     - name: Build and test
       run: |
         chmod +x gradlew
-        ./gradlew assembleRelease
-        ./gradlew test
+        ./gradlew assembleRelease || exit 1
+        ./gradlew test || exit 1
       env:
         KEYSTORE_FILE_PATH: ${{ github.workspace }}/release.keystore
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -39,4 +42,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: app-release
-        path: app/build/outputs/apk/release/app-release.apk
+        path: app/build/outputs/apk/release/*.apk
