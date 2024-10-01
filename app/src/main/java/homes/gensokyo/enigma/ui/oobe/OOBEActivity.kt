@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -24,125 +25,54 @@ class OOBEActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingBinding
     private val settingViewModel: SettingViewModel by viewModels()
-    private lateinit var GradeSpinAdapter:ArrayAdapter<String>
+
+    private lateinit var gradeSpinAdapter: ArrayAdapter<String>
+    private lateinit var classSpinAdapter: ArrayAdapter<String>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
-        var GradeSpinAdapter: ArrayAdapter<String> = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_dropdown_item,
-            mutableListOf()
-        )
-        var ClassSpinAdapter: ArrayAdapter<String> = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_dropdown_item,
-            mutableListOf()
-        )
 
-        val adpter = SchoolAdapter(settingViewModel,listOf<School>())
+        gradeSpinAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, mutableListOf())
+        classSpinAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, mutableListOf())
+
+        val schoolAdapter = SchoolAdapter(settingViewModel,listOf<School>())
         enableEdgeToEdge()
-        val rc = binding.recyclerView
-        rc.apply {
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@OOBEActivity)
-            adapter = adpter
+            adapter = schoolAdapter
         }
-        settingViewModel.schoolData.observe(this, Observer {
-            newData -> adpter.updateData(newData)
-            rc.apply {
-                layoutManager = LinearLayoutManager(this@OOBEActivity)
-                adapter = adpter
-                settingViewModel.isSchoolListVisible.postValue(true)
 
+        settingViewModel.schoolData.observe(this, Observer { newData ->
+            schoolAdapter.updateData(newData)
+            binding.recyclerView.apply {
+                //layoutManager = LinearLayoutManager(this@OOBEActivity)
+                //adapter = schoolAdapter
+                //settingViewModel.isSchoolListVisible.postValue(true)
+                //可能新能提升
+                binding.recyclerView.visibility = if (newData.isEmpty()) View.GONE else View.VISIBLE
             }
         })
-        binding.ETCPName.addTextChangedListener(object:
-        TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
+        binding.ETCPName.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val newText = s?.toString() ?: ""
-                settingViewModel.schoolInput.value = newText
-                Log.i("TAG","$newText")
+                settingViewModel.schoolInput.value = s?.toString() ?: ""
+                Log.i("TAG", "${settingViewModel.schoolInput.value}")
             }
-
             override fun afterTextChanged(s: Editable?) {
-
             }
-
-        })
-        settingViewModel.classNamesLiveData.observe(this, Observer { classITEM ->
-            if (classITEM.isNullOrEmpty()) {
-                Log.i("StET", "No class names available")
-                return@Observer
-            }
-            Log.i("className", "$classITEM")
-            val classNameList = classITEM.map { it.className }
-            ClassSpinAdapter.clear()
-            ClassSpinAdapter.addAll(classNameList)
-
-            binding.ETClass.setAdapter(ClassSpinAdapter)
-            ClassSpinAdapter.notifyDataSetChanged()
-
-            binding.ETClass.requestFocus()
-            binding.ETClass.showDropDown()
-            }
-        )
-        binding.ETClass.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.ETClass.showDropDown()
-            }
-        }
-
-        binding.ETClass.setOnItemClickListener { parent, view, position, id ->
-            val selectedClassItem = settingViewModel.classNamesLiveData.value?.get(position)
-            selectedClassItem?.let {
-                Log.i("StET", "Selected Class ID: ${it.classId}, Class Name: ${it.className}")
-                settingViewModel.onGradeSelected(it.classId)
-            }
-        }
-
-
-        settingViewModel.gradeNamesLiveData.observe(this, Observer { gradeITEM ->
-            if (gradeITEM.isNullOrEmpty()) {
-                Log.i("StET", "No class names available")
-                return@Observer
-            }
-            Log.i("gradeName22", "$gradeITEM")
-            val classNameList = gradeITEM.map { it.gradeName }
-            GradeSpinAdapter.clear()
-            GradeSpinAdapter.addAll(classNameList)
-
-            binding.ETGrade.setAdapter(GradeSpinAdapter)
-            GradeSpinAdapter.notifyDataSetChanged()
-
-            binding.ETGrade.requestFocus()
-            binding.ETGrade.showDropDown()
-
-            //Log.i("StET", "${gradeITEM}")
         })
 
-        binding.ETGrade.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.ETGrade.showDropDown()
-            }
-        }
+        setupClassSpinner()
+        setupGradeSpinner()
 
-        binding.ETGrade.setOnItemClickListener { parent, view, position, id ->
-            val selectedGradeItem = settingViewModel.gradeNamesLiveData.value?.get(position)
-            selectedGradeItem?.let {
-                Log.i("StET", "Selected Grade ID: ${it.gradeId}, Grade Name: ${it.gradeName}")
-                settingViewModel.onGradeSelected(it.gradeId)
-            }
-        }
 
         binding.button.setOnClickListener{
+            /*
            //val enteredName = settingViewModel.inputtedName.value
+
             val enteredName = binding.nameet.text.toString()
             val selectedClassId = settingViewModel.selectedGradeId.value
             val enteredCardNumber = binding.CrdNumber.text.toString()
@@ -161,6 +91,9 @@ class OOBEActivity : AppCompatActivity() {
                 Log.e("OOBEActivity", "Name or ClassId is missing!")
                 "Name or ClassId is missing!".toast()
             }
+
+             */
+            handleSubmit()
         }
 
 
@@ -207,4 +140,79 @@ class OOBEActivity : AppCompatActivity() {
  */
 
     }
+    private fun handleSubmit() {
+        val enteredName = binding.nameet.text.toString()
+        val selectedClassId = settingViewModel.selectedGradeId.value
+        val enteredCardNumber = binding.CrdNumber.text.toString()
+
+        if (enteredName.isNotEmpty() && selectedClassId != null) {
+            settingViewModel.submitStudentData(enteredName, selectedClassId, enteredCardNumber)
+            Log.i("OOBEActivity", "Name: $enteredName, ClassId: $selectedClassId")
+            SettingUtils.put("isFirst", false)
+            startActivity(Intent(this, MainActivity::class.java))
+        } else {
+            Log.e("OOBEActivity", "Name or ClassId is missing!")
+            "Name or ClassId is missing!".toast()
+        }
+    }
+    private fun setupGradeSpinner() {
+        settingViewModel.gradeNamesLiveData.observe(this, Observer { gradeITEM ->
+            if (gradeITEM.isNullOrEmpty()) {
+                Log.i("StET", "No class names available")
+                return@Observer
+            }
+            Log.i("gradeName22", "$gradeITEM")
+            val gradeNameList = gradeITEM.map { it.gradeName }
+            gradeSpinAdapter.clear()
+            gradeSpinAdapter.addAll(gradeNameList)
+
+            binding.ETGrade.setAdapter(gradeSpinAdapter)
+            binding.ETGrade.requestFocus()
+            binding.ETGrade.showDropDown()
+        })
+
+        binding.ETGrade.setOnFocusChangeListener { _, hasFocus ->
+
+                binding.ETGrade.showDropDown()
+
+        }
+
+        binding.ETGrade.setOnItemClickListener { parent, view, position, id ->
+            val selectedGradeItem = settingViewModel.gradeNamesLiveData.value?.get(position)
+            selectedGradeItem?.let {
+                Log.i("StET", "Selected Grade ID: ${it.gradeId}, Grade Name: ${it.gradeName}")
+                settingViewModel.onGradeSelected(it.gradeId)
+            }
+        }
+
+    }
+    private fun setupClassSpinner() {
+        settingViewModel.classNamesLiveData.observe(this, Observer { classITEM ->
+            if (classITEM.isNullOrEmpty()) {
+                Log.i("StET", "No class names available")
+                return@Observer
+            }
+            Log.i("className", "$classITEM")
+            val classNameList = classITEM.map { it.className }
+            classSpinAdapter.clear()
+            classSpinAdapter.addAll(classNameList)
+
+            binding.ETClass.setAdapter(classSpinAdapter)
+            binding.ETClass.requestFocus()
+            binding.ETClass.showDropDown()
+        }
+        )
+        binding.ETClass.setOnFocusChangeListener { _, _ ->
+            //if (hasFocus) binding.ETClass.showDropDown()
+            binding.ETClass.showDropDown()
+        }
+        binding.ETClass.setOnItemClickListener { parent, view, position, id ->
+            val selectedClassItem = settingViewModel.classNamesLiveData.value?.get(position)
+            selectedClassItem?.let {
+                Log.i("StET", "Selected Class ID: ${it.classId}, Class Name: ${it.className}")
+                settingViewModel.onGradeSelected(it.classId)
+            }
+        }
+    }
+
 }
