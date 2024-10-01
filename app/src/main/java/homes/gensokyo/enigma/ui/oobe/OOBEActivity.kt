@@ -1,6 +1,5 @@
-package homes.gensokyo.enigma.ui.setting
+package homes.gensokyo.enigma.ui.oobe
 
-import android.R
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -10,9 +9,6 @@ import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.databinding.adapters.TextViewBindingAdapter.setText
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import homes.gensokyo.enigma.MainActivity
@@ -22,10 +18,9 @@ import homes.gensokyo.enigma.databinding.ActivitySettingBinding
 import homes.gensokyo.enigma.util.SettingUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
 import homes.gensokyo.enigma.util.TextUtils.toast
-import java.util.ArrayList
 
 
-class SettingActivity : AppCompatActivity() {
+class OOBEActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingBinding
     private val settingViewModel: SettingViewModel by viewModels()
@@ -52,13 +47,13 @@ class SettingActivity : AppCompatActivity() {
         enableEdgeToEdge()
         val rc = binding.recyclerView
         rc.apply {
-            layoutManager = LinearLayoutManager(this@SettingActivity)
+            layoutManager = LinearLayoutManager(this@OOBEActivity)
             adapter = adpter
         }
         settingViewModel.schoolData.observe(this, Observer {
             newData -> adpter.updateData(newData)
             rc.apply {
-                layoutManager = LinearLayoutManager(this@SettingActivity)
+                layoutManager = LinearLayoutManager(this@OOBEActivity)
                 adapter = adpter
                 settingViewModel.isSchoolListVisible.postValue(true)
 
@@ -152,18 +147,18 @@ class SettingActivity : AppCompatActivity() {
             val selectedClassId = settingViewModel.selectedGradeId.value
             val enteredCardNumber = binding.CrdNumber.text.toString()
             enteredName?.toast()
-            Log.i("SettingActivity", "Name: $enteredName, ClassId: $selectedClassId")
+            Log.i("OOBEActivity", "Name: $enteredName, ClassId: $selectedClassId")
             if (enteredName!!.isNotEmpty() && selectedClassId != null ) {
                 if (enteredName != null) {
                     settingViewModel.submitStudentData(enteredName, selectedClassId,enteredCardNumber)
                 }
-                Log.i("SettingActivity", "Name: $enteredName, ClassId: $selectedClassId")
+                Log.i("OOBEActivity", "Name: $enteredName, ClassId: $selectedClassId")
                 //get("isFirst", "yes").toast()
                 SettingUtils.put("isFirst", false)
                 Log.i("ST",get("isFirst",true).toString())
                 startActivity(Intent(this, MainActivity::class.java))
             } else {
-                Log.e("SettingActivity", "Name or ClassId is missing!")
+                Log.e("OOBEActivity", "Name or ClassId is missing!")
                 "Name or ClassId is missing!".toast()
             }
         }

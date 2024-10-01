@@ -3,13 +3,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.setting.SettingActivity">
+    tools:context=".ui.oobe.SettingActivity">
 
     <data>
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="homes.gensokyo.enigma.ui.setting.SettingViewModel" />
+            type="homes.gensokyo.enigma.ui.oobe.SettingViewModel" />
 
     </data>
 

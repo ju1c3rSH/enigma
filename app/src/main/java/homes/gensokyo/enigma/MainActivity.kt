@@ -7,21 +7,19 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.gson.Gson
-import homes.gensokyo.enigma.R
 
 import homes.gensokyo.enigma.databinding.ActivityMainBinding
 
 import homes.gensokyo.enigma.`interface`.ApiService
 import homes.gensokyo.enigma.logic.logic.UserRepository
 import homes.gensokyo.enigma.service.ZhiWeiDataGetterService
-import homes.gensokyo.enigma.ui.setting.SettingActivity
+import homes.gensokyo.enigma.ui.oobe.OOBEActivity
 import homes.gensokyo.enigma.util.NetworkUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
 import homes.gensokyo.enigma.viewmodel.SharedViewModel
@@ -48,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         repository = UserRepository()
         // = NetworkUtils.retrofit.create(ApiService::class.java)
         if(get("isFirst",true)){
-            startActivity(Intent(this, SettingActivity::class.java))
+            startActivity(Intent(this, OOBEActivity::class.java))
         }
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

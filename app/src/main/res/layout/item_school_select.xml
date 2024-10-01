@@ -4,7 +4,7 @@
         <!-- 这是您的ViewModel或任何用于数据绑定的对象 -->
         <variable
             name="viewModel"
-            type="homes.gensokyo.enigma.ui.setting.SettingViewModel" />
+            type="homes.gensokyo.enigma.ui.oobe.SettingViewModel" />
         <variable
             name="school"
             type="homes.gensokyo.enigma.bean.School" />

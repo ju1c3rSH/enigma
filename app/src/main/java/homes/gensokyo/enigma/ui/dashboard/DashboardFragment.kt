@@ -14,6 +14,7 @@ import homes.gensokyo.enigma.bean.memberflowbean
 import homes.gensokyo.enigma.databinding.FragmentDashboardBinding
 import homes.gensokyo.enigma.util.AppConstants
 import homes.gensokyo.enigma.util.DateUtils
+
 import homes.gensokyo.enigma.util.SettingUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,17 +36,11 @@ class DashboardFragment : Fragment() {
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-
-
         adapter = ConsumeHistoryAdapter(emptyList())
         recyclerView.adapter = adapter
-
-        // Perform network request on background thread
         CoroutineScope(Dispatchers.IO).launch {
-            // Build the request
             val memberFlowRequest = MemberFlowJsonBuilder(
                 SettingUtils.get("kidUuid", "1111"),
                 listOf(2, 5, 6, 7),
@@ -56,10 +51,7 @@ class DashboardFragment : Fragment() {
                 DateUtils.Date2Str(1)
             )
 
-            // Fetch data
             val result: List<memberflowbean.Data> = MainActivity.repository.fetchMemberFlow(memberFlowRequest, AppConstants.headerMap)?.datas!!
-
-            // Update adapter with fetched data on the main thread
             withContext(Dispatchers.Main) {
                 adapter = ConsumeHistoryAdapter(result)
                 recyclerView.adapter = adapter

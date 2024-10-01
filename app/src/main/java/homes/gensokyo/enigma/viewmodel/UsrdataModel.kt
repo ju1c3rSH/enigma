@@ -12,6 +12,7 @@ import homes.gensokyo.enigma.util.CiperTextUtil
 import homes.gensokyo.enigma.util.AppConstants
 import homes.gensokyo.enigma.util.DateUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -34,7 +35,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
     private val _memberFlow = MutableLiveData<memberflowbean>()
     private val memberFlow :LiveData<memberflowbean> = _memberFlow
 
-    private val intervalMillis: Long = 180000
+    private val intervalMillis: Long = 15000
 
     init {
         startPeriodicRefresh(headers = AppConstants.headerMap)
@@ -90,6 +91,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                 //这里智威后台发癫，会返回所有同一parent的kid，并且kid顺序有变化
 
 
+                /*
                 val resultBalance = repository.fetchBalance(AppConstants.headerMap)
                 if (resultBalance != null) {
                     Log.i("UsrMdl", "Received Balance info: $resultBalance")
@@ -111,19 +113,33 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     DateUtils.Date2Str(1)
                 )
                 val resultMemberFlow = repository.fetchMemberFlow(memberFlowRequest, AppConstants.headerMap)
+                弃用代码
+                 */
+                val resultBalanceDeferred = async { repository.fetchBalance(AppConstants.headerMap) }
+                val resultMemberFlowDeferred = async {
+                    val memberFlowRequest = MemberFlowJsonBuilder(
+                        get("kidUuid","1111"),
+                        listOf(2, 5, 6, 7),
+                        7,
+                        1,
+                        100,
+                        DateUtils.Date2Str(-10,true),
+                        DateUtils.Date2Str(1)
+                    )
+                    repository.fetchMemberFlow(memberFlowRequest, AppConstants.headerMap)
+                }
+
+                val resultBalance = resultBalanceDeferred.await()
+                val resultMemberFlow = resultMemberFlowDeferred.await()
+
 
                 Log.i("DataService", "Received MemberFlow info: $resultMemberFlow")
                 if (resultBalance != null && resultKid != null) {
-                    val studentName = resultKid[findStudentIndex(resultKid)].studentName ?: "默认姓名"
-
-                    val headSculpture = resultKid.firstOrNull()?.headSculpture ?: ""
-
-                    Log.i("refreshData", studentName)
-
-                    val className = resultKid[findStudentIndex(resultKid)].classes.className ?: ""
-
-                    val studentNamePinyin = resultKid[findStudentIndex(resultKid)].studentNamePinyin ?: ""
-
+                    val studentIndex = findStudentIndex(resultKid)
+                    val studentName = resultKid[studentIndex].studentName ?: "默认姓名"
+                    val className = resultKid[studentIndex].classes.className ?: ""
+                    val studentNamePinyin = resultKid[studentIndex].studentNamePinyin ?: ""
+                    val headSculpture = resultKid[studentIndex].headSculpture ?: ""
                     if (resultMemberFlow != null) {
                         Log.i("refreshData", resultMemberFlow.toString())
 

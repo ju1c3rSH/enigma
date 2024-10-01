@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import homes.gensokyo.enigma.bean.School
 
 import homes.gensokyo.enigma.databinding.ItemSchoolSelectBinding
-import homes.gensokyo.enigma.ui.setting.SettingViewModel
+import homes.gensokyo.enigma.ui.oobe.SettingViewModel
 
 class SchoolAdapter(private val vm: SettingViewModel, private var dataList: List<School>) :
     RecyclerView.Adapter<SchoolViewHolder>(){

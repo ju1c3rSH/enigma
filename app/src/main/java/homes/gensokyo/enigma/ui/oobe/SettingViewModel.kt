@@ -1,6 +1,5 @@
-package homes.gensokyo.enigma.ui.setting
+package homes.gensokyo.enigma.ui.oobe
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,18 +8,13 @@ import homes.gensokyo.enigma.MainActivity
 import homes.gensokyo.enigma.adapter.SchoolAdapter
 import homes.gensokyo.enigma.bean.GradeBean
 import homes.gensokyo.enigma.bean.School
-import homes.gensokyo.enigma.bean.Student
 import homes.gensokyo.enigma.util.AppConstants
-import homes.gensokyo.enigma.util.SettingUtils.get
 import homes.gensokyo.enigma.util.SettingUtils.put
 import homes.gensokyo.enigma.util.TextUtils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.collections.intersect
-import kotlin.collections.joinToString
-import kotlin.collections.toList
 
 data class GradeItem(val gradeId: Int, val gradeName: String)
 data class ClassItem(val classId: Int, val className: String)
@@ -145,7 +139,7 @@ class SettingViewModel : ViewModel() {
     }
 
 
-    // 处理class逻辑
+    //处理class逻辑
     fun onGradeSelected(gradeId: Int) {
         _selectedGradeId.value = gradeId
         val selectedGrade = resultGetClasses?.find { it.classId == gradeId }

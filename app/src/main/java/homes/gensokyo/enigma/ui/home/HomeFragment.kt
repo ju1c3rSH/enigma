@@ -51,6 +51,7 @@ class HomeFragment : Fragment() {
                 }
                 is DataState.Error -> {
                     Log.e("HomeFragment", "Error: ${state.exception }")
+                    binding.textHome.text = "出错，等待刷新"
                     //hideLoading()
                 }
             }

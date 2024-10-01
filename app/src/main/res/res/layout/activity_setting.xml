@@ -9,7 +9,7 @@
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="homes.gensokyo.enigma.ui.setting.SettingViewModel" />
+            type="homes.gensokyo.enigma.ui.oobe.SettingViewModel" />
     </data>
 
     <com.google.android.material.textfield.TextInputLayout

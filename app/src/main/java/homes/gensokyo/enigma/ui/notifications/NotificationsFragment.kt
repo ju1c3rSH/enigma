@@ -10,11 +10,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import homes.gensokyo.enigma.MainApplication.Companion.repository
 import homes.gensokyo.enigma.databinding.FragmentNotificationsBinding
 import homes.gensokyo.enigma.ui.about.AboutActivity
-import homes.gensokyo.enigma.ui.setting.SettingActivity
 import homes.gensokyo.enigma.viewmodel.DataState
 import homes.gensokyo.enigma.viewmodel.UsrdataModel
 import homes.gensokyo.enigma.viewmodel.UsrdataModelFactory
