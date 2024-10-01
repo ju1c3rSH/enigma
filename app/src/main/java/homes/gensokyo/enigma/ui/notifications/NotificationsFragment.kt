@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import homes.gensokyo.enigma.MainApplication.Companion.repository
 import homes.gensokyo.enigma.databinding.FragmentNotificationsBinding
 import homes.gensokyo.enigma.ui.about.AboutActivity
+import homes.gensokyo.enigma.ui.setting.SettingsActivity
 import homes.gensokyo.enigma.viewmodel.DataState
 import homes.gensokyo.enigma.viewmodel.UsrdataModel
 import homes.gensokyo.enigma.viewmodel.UsrdataModelFactory
@@ -41,6 +42,10 @@ class NotificationsFragment : Fragment() {
         val root: View = binding.root
         binding.about.setOnClickListener {
             val intent = Intent(requireContext(), AboutActivity::class.java)
+            startActivity(intent)
+        }
+        binding.button3.setOnClickListener {
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
             startActivity(intent)
         }
         val textView: TextView = binding.textNotifications

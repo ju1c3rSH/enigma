@@ -1,0 +1,42 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/common_setting_header">
+
+        <EditTextPreference
+            app:key="updateRate"
+            app:title="@string/update_rate"
+            android:summary="@string/clear_preferences_summary"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            android:key="clear_preferences"
+            app:title="@string/clear_preferences"
+            android:summary="@string/clear_preferences_summary" />
+        <Preference
+            android:key="restart_app"
+            app:title="重启软件"
+            android:summary="重启以应用新配置" />
+        <Preference
+            android:key="app_details"
+            app:title="软件细节"
+            android:summary="软件使用到的权限" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/ComingSoon_header">
+
+        <SwitchPreferenceCompat
+            app:enabled="false"
+            app:key="help_us_better"
+            app:title="@string/help_us_better" />
+
+        <SwitchPreferenceCompat
+            app:enabled="false"
+            app:key="auto_sync"
+            app:summaryOff="@string/auto_sync_summary_off"
+            app:summaryOn="@string/auto_sync_summary_on"
+            app:title="@string/attachment_title" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

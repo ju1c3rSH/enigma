@@ -35,7 +35,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
     private val _memberFlow = MutableLiveData<memberflowbean?>()
     val memberFlow : MutableLiveData<memberflowbean?> = _memberFlow
 
-    private val intervalMillis: Long = 15000
+
 
     init {
         startPeriodicRefresh(headers = AppConstants.headerMap)
@@ -43,11 +43,15 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
 
     //定时刷新任务
     private fun startPeriodicRefresh(headers: Map<String, String>) {
+        val intervalMillis: Long? = get("updateRate","15000").toLongOrNull()
         viewModelScope.launch {
             flow {
                 while (true) {
                     emit(Unit)
-                    delay(intervalMillis)
+                    Log.i("startPeriodicRefresh", intervalMillis.toString())
+                    if (intervalMillis != null) {
+                        delay(intervalMillis)
+                    }
                 }
             }.collect {
                 refreshData(headers)
