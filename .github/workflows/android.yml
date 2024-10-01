@@ -23,19 +23,11 @@ jobs:
     - name: Decode keystore
       run: |
         echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > release.keystore
-
-    - name: Clean project
-      run: |
-        chmod +x app/gradlew
-        cd app
-        ./gradlew clean
-
     - name: Build and test
       run: |
-        chmod +x app/gradlew
-        cd app
-        ./gradlew assembleRelease || exit 1
-        ./gradlew test || exit 1
+        chmod +x gradlew
+        ./gradlew assembleRelease
+        ./gradlew test
       env:
         KEYSTORE_FILE_PATH: ${{ github.workspace }}/release.keystore
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
