@@ -1,5 +1,9 @@
 package homes.gensokyo.enigma.util
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import homes.gensokyo.enigma.util.MyCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -24,6 +28,24 @@ class NetworkUtils {
             .addConverterFactory(ScalarsConverterFactory.create()) // 允许返回 String 类型
             .addConverterFactory(GsonConverterFactory.create()) // 允许使用 JSON 转换对象
             .build()
+    }
+    fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val network = connectivityManager.activeNetwork ?: return false
+            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+            return when {
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                else -> false
+            }
+        } else {
+            val networkInfo = connectivityManager.activeNetworkInfo
+            return networkInfo != null && networkInfo.isConnected
+        }
     }
 /*
     private interface ApiService {

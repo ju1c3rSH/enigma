@@ -159,10 +159,11 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                         )
                     }
                 } else {
+                    _studentData.postValue(
+                        DataState.Error("err")
+                    )
                     Log.i("refreshData", "resultBalance is null")
-                    _studentData.postValue(resultKid?.get(findStudentIndex(resultKid))?.let {
-                        DataState.Error(it.studentName)
-                    })
+
 
                 }
             }catch (e: Exception) {

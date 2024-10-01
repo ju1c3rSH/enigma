@@ -22,6 +22,7 @@ import homes.gensokyo.enigma.service.ZhiWeiDataGetterService
 import homes.gensokyo.enigma.ui.oobe.OOBEActivity
 import homes.gensokyo.enigma.util.NetworkUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
+import homes.gensokyo.enigma.util.TextUtils.toast
 import homes.gensokyo.enigma.viewmodel.SharedViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -55,6 +56,9 @@ class MainActivity : AppCompatActivity() {
         val serviceIntent = Intent(this, ZhiWeiDataGetterService::class.java)
         startService(serviceIntent)
 
+        if (!NetworkUtils().isNetworkAvailable(context)) {
+            "No internet connection available".toast()
+        }
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.

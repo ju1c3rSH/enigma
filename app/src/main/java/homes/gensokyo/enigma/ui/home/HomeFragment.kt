@@ -1,5 +1,6 @@
 package homes.gensokyo.enigma.ui.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,6 +31,7 @@ class HomeFragment : Fragment() {
 
     private val binding get() = _binding!!
     private val serviceScope = CoroutineScope(Dispatchers.IO)
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,9 +47,10 @@ class HomeFragment : Fragment() {
                     Log.i("HomeFragment", "Loading...")
                 }
                 is DataState.Success -> {
-                    Log.i("HomeFragment", "Success: ${state.data}")
 
+                    binding.textHome.text = "Debug Build"
                     updateData(state.data)
+                    Log.i("HomeFragment", "Success: ${state.data}")
                 }
                 is DataState.Error -> {
                     Log.e("HomeFragment", "Error: ${state.exception }")
