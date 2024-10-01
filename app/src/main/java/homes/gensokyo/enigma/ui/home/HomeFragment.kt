@@ -50,7 +50,7 @@ class HomeFragment : Fragment() {
                     updateData(state.data)
                 }
                 is DataState.Error -> {
-                    Log.e("HomeFragment", "Error: ${state.exception.message }")
+                    Log.e("HomeFragment", "Error: ${state.exception }")
                     //hideLoading()
                 }
             }

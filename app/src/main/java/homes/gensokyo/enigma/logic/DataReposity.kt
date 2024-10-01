@@ -72,7 +72,7 @@ class UserRepository {
         return try {
             val response = apiService.fetchBalance(AppConstants.getBalance+ get("kidUuid","111"),headerMap)
             if (response.isSuccessful) {
-                Log.i("fetchBalance111", response.body().toString())
+                Log.i("fetchBalance111", response.body().toString() + get("kidUuid","111"))
                 return gson.fromJson(response.body(), balanceBean::class.java)
             } else {
                 // Handle error, e.g., throw an exception or return null
@@ -80,7 +80,6 @@ class UserRepository {
                 null
             }
         } catch (e: Exception) {
-            // Handle exception properly, e.g., log the error and rethrow
             Log.e("fetchBalance", "Error fetching balance", e)
             null
         }

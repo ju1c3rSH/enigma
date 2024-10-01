@@ -63,7 +63,7 @@ class NotificationsFragment : Fragment() {
                     binding.textViewCardNumber.text = state.data.cardNumber
                 }
                 is DataState.Error -> {
-                    Log.e("NotificationsFragment", "Error: ${state.exception.message }")
+                    Log.e("NotificationsFragment", "Error: ${state.exception }")
                     //hideLoading()
                 }
             }

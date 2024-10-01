@@ -62,10 +62,11 @@ class ZhiWeiDataGetterService : Service() {
             return null
         }
 
+        val isFirstRun = get("isFirst", true)
 
         suspend private fun fetchData() {
-                if(!(get("isFirst", true))){
-                    Log.i("DataService", "isFirst")
+                if(!isFirstRun){
+                    Log.i("DataService", "isFirst:$isFirstRun")
                     serviceScope.launch {
                     try {
                         val cipherText = CiperTextUtil.encrypt(get("wxOaOpenid","sss"))//这些默认值也许可以更好

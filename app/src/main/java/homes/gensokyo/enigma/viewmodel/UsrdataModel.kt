@@ -56,7 +56,18 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
     fun updateMemberFlow(newMemberFlow: memberflowbean) {
         _memberFlow.postValue(newMemberFlow)
     }
+    private fun findStudentIndex(resultKid: List<Student>?): Int {
+        val savedName = get("studentName","默认名字")
+        resultKid?.forEachIndexed { index, student ->
+            //Log.i("findStudentIndex", "savedName: ${savedName}")
+            if (student.studentName == savedName) {
+                Log.i("findStudentIndex", "savedName: ${savedName} + $index")
+                return index
+            }
+        }
 
+        return -1
+    }
 
     suspend fun refreshData(headers: Map<String, String>) {
         viewModelScope.launch {
@@ -69,17 +80,26 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
 
                 val resultLogin = repository.doLogin(AppConstants.headerMap)
                 resultLogin?.let {
-
                 }
 
                 val resultKid = repository.fetchStudents(AppConstants.headerMap)
-                resultKid?.let {
 
-                }
+                resultKid?.joinToString(separator = "\n", prefix = "Students:\n") { student ->
+                    "Name: ${student.studentName}, ID: ${student.studentId}, CN: ${student.cardNumber}"
+                }?.let { Log.d("StudentList", it) }
+                //这里智威后台发癫，会返回所有同一parent的kid，并且kid顺序有变化
+
 
                 val resultBalance = repository.fetchBalance(AppConstants.headerMap)
-                resultBalance?.let {
+                if (resultBalance != null) {
+                    Log.i("UsrMdl", "Received Balance info: $resultBalance")
+
+                } else {
+                    Log.e("UsrMdl", "Failed to fetch balance") // 记录错误信息
+                    _studentData.postValue(DataState.Error("Failed to fetch balance")) // 更新 UI 状态
+
                 }
+
                 Log.i("startDat",  DateUtils.Date2Str(-10,true) )
                 val memberFlowRequest = MemberFlowJsonBuilder(
                     get("kidUuid","1111"),
@@ -90,20 +110,25 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     DateUtils.Date2Str(-10,true),
                     DateUtils.Date2Str(1)
                 )
-                val resultMemberFlow =
-                    repository.fetchMemberFlow(memberFlowRequest, AppConstants.headerMap)
+                val resultMemberFlow = repository.fetchMemberFlow(memberFlowRequest, AppConstants.headerMap)
+
                 Log.i("DataService", "Received MemberFlow info: $resultMemberFlow")
                 if (resultBalance != null && resultKid != null) {
-                    val studentName = resultKid.firstOrNull()?.studentName ?: "默认姓名"
+                    val studentName = resultKid[findStudentIndex(resultKid)].studentName ?: "默认姓名"
+
                     val headSculpture = resultKid.firstOrNull()?.headSculpture ?: ""
-                    val className = resultKid.firstOrNull()?.classes?.className ?: ""
-                    val studentNamePinyin = resultKid.firstOrNull()?.studentNamePinyin ?: ""
+
+                    Log.i("refreshData", studentName)
+
+                    val className = resultKid[findStudentIndex(resultKid)].classes.className ?: ""
+
+                    val studentNamePinyin = resultKid[findStudentIndex(resultKid)].studentNamePinyin ?: ""
+
                     if (resultMemberFlow != null) {
                         Log.i("refreshData", resultMemberFlow.toString())
 
                         _studentData.postValue(
                             DataState.Success(
-
                                 UserDataBean(
                                     balance = resultBalance.balance.toString(),
                                     studentName = studentName,
@@ -112,17 +137,20 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                                     studentNamePinyin = studentNamePinyin,
                                     headSculpture = headSculpture,
                                     className = className,
-
                                 )
 
                             )
                         )
                     }
                 } else {
-                    _studentData.postValue(DataState.Error(Throwable(resultMemberFlow.toString() + resultKid)))
+                    Log.i("refreshData", "resultBalance is null")
+                    _studentData.postValue(resultKid?.get(findStudentIndex(resultKid))?.let {
+                        DataState.Error(it.studentName)
+                    })
+
                 }
             }catch (e: Exception) {
-            _studentData.postValue(DataState.Error(e))
+            _studentData.postValue(e.message?.let { DataState.Error(it) })
         }
      }
     }
@@ -132,7 +160,7 @@ sealed class DataState<out T> {
     data class Success<T>(val data: UserDataBean) : DataState<T>()
 
     // 错误状态
-    data class Error(val exception: Throwable) : DataState<Nothing>()
+    data class Error(val exception: String) : DataState<Nothing>()
 
     // 加载状态
     object Loading : DataState<Nothing>()
