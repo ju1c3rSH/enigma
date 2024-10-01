@@ -172,7 +172,6 @@ class OOBEActivity : AppCompatActivity() {
         })
 
         binding.ETGrade.setOnFocusChangeListener { _, hasFocus ->
-
                 binding.ETGrade.showDropDown()
 
         }

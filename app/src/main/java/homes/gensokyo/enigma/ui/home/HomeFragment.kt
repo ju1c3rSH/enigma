@@ -26,6 +26,7 @@ class HomeFragment : Fragment() {
         val factory = UsrdataModelFactory(repository)
         ViewModelProvider(this, factory)[UsrdataModel::class.java]
     }
+
     lateinit var state :
             DataState<UserDataBean>
 
@@ -54,7 +55,7 @@ class HomeFragment : Fragment() {
                 }
                 is DataState.Error -> {
                     Log.e("HomeFragment", "Error: ${state.exception }")
-                    binding.textHome.text = "出错，等待刷新"
+                    binding.textHome.text = "出错，等待刷新 \n如果刚过初始化出现错误，请等待，这不是您的问题。"
                     //hideLoading()
                 }
             }

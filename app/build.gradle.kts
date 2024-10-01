@@ -18,9 +18,10 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        versionNameSuffix = "提拉米苏"
     }
 
     buildTypes {
@@ -52,6 +53,7 @@ dependencies {
     implementation("androidx.room:room-runtime:2.4.0")
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.preference)
     annotationProcessor("androidx.room:room-compiler:2.4.0")
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.4.0")

@@ -12,7 +12,11 @@ class MyCookieJar : CookieJar {
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
         if (cookies.isNotEmpty()) {
             val host = url.host
-            cookieStore[host] = mutableListOf()
+
+            if (cookieStore[host] == null) {
+                cookieStore[host] = mutableListOf()
+            }
+
             for (cookie in cookies) {
                 cookieStore[host]?.add(cookie)
                 Log.i("CookieJarUtils", "Saved cookie for $host: $cookie")
@@ -31,16 +35,19 @@ class MyCookieJar : CookieJar {
 
             while (iterator.hasNext()) {
                 val cookie = iterator.next()
-                if (cookie.expiresAt > currentTimeMillis) {
+                // if (cookie.expiresAt > currentTimeMillis) {
+                if (cookie != null && cookie.expiresAt > currentTimeMillis) {
                     validCookies.add(cookie)
-                } else {
-                    // 删除已经过期的 cookie
+                } else if (cookie != null) {
+                    //remove expired cookie
                     iterator.remove()
                     Log.i("CookieJarUtils", "Removed expired cookie: $cookie")
                 }
             }
 
             Log.i("CookieJarUtils", "Loaded cookies for $host: $validCookies")
+        } else {
+            Log.i("CookieJarUtils", "No cookies found for $host")
         }
 
         return validCookies

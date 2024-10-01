@@ -32,8 +32,8 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
     private val _studentData = MutableLiveData<DataState<UserDataBean>>()
     val studentData: LiveData<DataState<UserDataBean>> = _studentData
 
-    private val _memberFlow = MutableLiveData<memberflowbean>()
-    private val memberFlow :LiveData<memberflowbean> = _memberFlow
+    private val _memberFlow = MutableLiveData<memberflowbean?>()
+    val memberFlow : MutableLiveData<memberflowbean?> = _memberFlow
 
     private val intervalMillis: Long = 15000
 
@@ -54,9 +54,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
             }
         }
     }
-    fun updateMemberFlow(newMemberFlow: memberflowbean) {
-        _memberFlow.postValue(newMemberFlow)
-    }
+
     private fun findStudentIndex(resultKid: List<Student>?): Int {
         val savedName = get("studentName","默认名字")
         resultKid?.forEachIndexed { index, student ->
@@ -76,7 +74,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                 val cipherText = CiperTextUtil.encrypt(get("wxOaOpenid","000"))
                 val resultGetRole = repository.fetchRole(cipherText, AppConstants.headerMap)
                 resultGetRole?.let {
-                    Log.i("UsrMdl", "Received Role info: $it")
+                    Log.i("UsrMdl", "Received Role info: $it ；$cipherText   11"  +get("wxOaOpenid","000").toString())
                 }
 
                 val resultLogin = repository.doLogin(AppConstants.headerMap)
@@ -133,16 +131,19 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                 val resultMemberFlow = resultMemberFlowDeferred.await()
 
 
-                Log.i("DataService", "Received MemberFlow info: $resultMemberFlow")
+
+
+                Log.i("UsrDataModel", "Received MemberFlow info: $resultMemberFlow")
                 if (resultBalance != null && resultKid != null) {
                     val studentIndex = findStudentIndex(resultKid)
                     val studentName = resultKid[studentIndex].studentName ?: "默认姓名"
                     val className = resultKid[studentIndex].classes.className ?: ""
                     val studentNamePinyin = resultKid[studentIndex].studentNamePinyin ?: ""
                     val headSculpture = resultKid[studentIndex].headSculpture ?: ""
+
                     if (resultMemberFlow != null) {
                         Log.i("refreshData", resultMemberFlow.toString())
-
+                        _memberFlow.postValue(resultMemberFlow)
                         _studentData.postValue(
                             DataState.Success(
                                 UserDataBean(
@@ -158,6 +159,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                             )
                         )
                     }
+
                 } else {
                     _studentData.postValue(
                         DataState.Error("err")

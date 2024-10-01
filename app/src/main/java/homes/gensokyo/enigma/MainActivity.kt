@@ -48,6 +48,8 @@ class MainActivity : AppCompatActivity() {
         // = NetworkUtils.retrofit.create(ApiService::class.java)
         if(get("isFirst",true)){
             startActivity(Intent(this, OOBEActivity::class.java))
+            finish()
+            return
         }
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

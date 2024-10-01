@@ -18,8 +18,6 @@ import homes.gensokyo.enigma.util.AppConstants
 import homes.gensokyo.enigma.util.DateUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
 import homes.gensokyo.enigma.viewmodel.SharedViewModel
-import homes.gensokyo.enigma.viewmodel.UsrdataModel
-import homes.gensokyo.enigma.viewmodel.UsrdataModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
