@@ -42,6 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="请输入学校名称"
+                android:textColorHint="#66CCFF"
                 android:inputType="text"
                 android:paddingBottom="16dp"
                 android:text="@={viewModel.schoolInput}" />
@@ -67,7 +68,7 @@
                     android:layout_height="50dp"
                     android:dropDownHeight="wrap_content"
                     android:inputType="none"
-                    tools:text="ET_Grade" />
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -82,7 +83,7 @@
                     android:layout_height="50dp"
                     android:dropDownHeight="wrap_content"
                     android:inputType="none"
-                    tools:text="ET_Class" />
+                     />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -97,21 +98,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.inputtedName}"
-                    android:hint="ET_Name"/>
+                    />
                 <!--- 单向绑定 -->
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="输入卡板北面的卡号"
+                android:hint="输入卡板背面的卡号"
                 android:visibility="@{viewModel.isSchoolListVisible ? View.GONE : View.VISIBLE}">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/CrdNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.inputtedCarNumber}"
-                    android:hint="ET_CrdNumber"/>
+
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button

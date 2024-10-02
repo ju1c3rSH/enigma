@@ -58,7 +58,7 @@ class SettingViewModel : ViewModel() {
                     schoolInput.value.toString(),
                     AppConstants.headerMap
                 )
-                Log.i("SettingViewModel", "Received school info: $resultGetschool")
+                Log.d("SettingViewModel", "Received school info: $resultGetschool")
 
                 resultGetschool?.let {
                     withContext(Dispatchers.Main) {
@@ -66,7 +66,7 @@ class SettingViewModel : ViewModel() {
                         isSchoolListVisible.postValue(true)
                         Log.d("SettingViewModel", "isSchoolListVisible: ${isSchoolListVisible.value}")
 
-                        Log.i("SettingViewModel", "Updated school adapter data ${schoolAdapter.getItemCount()} ")
+                        Log.d("SettingViewModel", "Updated school adapter data ${schoolAdapter.getItemCount()} ")
                     }
                 }
             } catch (e: Exception) {
@@ -82,16 +82,16 @@ class SettingViewModel : ViewModel() {
                     tenantId,
                     AppConstants.headerMap
                 )
-                Log.i("SettingViewModel", "Received class info: $resultGetClasses")
+                Log.d("SettingViewModel", "Received class info: $resultGetClasses")
                 if (resultGetClasses != null) {
                     val gradeList = mutableListOf<GradeItem>()
                     resultGetClasses!!.forEachIndexed { index, gradeInfo ->
-                        //Log.i("SettingViewModel", "Class $index: ${classInfo.className}")
+                        //Log.d("SettingViewModel", "Class $index: ${classInfo.className}")
                         val gradeItem = GradeItem(gradeInfo.classId, gradeInfo.className)
                         gradeList.add(gradeItem)
-                        //Log.i("SettingViewModel", "Added ClassItem: $classItem")
+                        //Log.d("SettingViewModel", "Added ClassItem: $classItem")
                     }
-                    Log.i("SettingViewModel", "Grade list: ${gradeList}")
+                    Log.d("SettingViewModel", "Grade list: ${gradeList}")
                     _gradeNamesLiveData.postValue(gradeList)
                 }
 
@@ -116,7 +116,7 @@ class SettingViewModel : ViewModel() {
                     "请确认您输入的信息没有错误。".toast()
 
                 } else {
-                        Log.i("SettingViewModel", "Received student info: ${result.studentId}")
+                        Log.d("SettingViewModel", "Received student info: ${result.studentId}")
                         put("isFirst", false)
                         put("kidUuid",result.uuid)
                         put("wxOaOpenid",result.parentStudents[0].parent.wxOaOpenid)
@@ -131,10 +131,10 @@ class SettingViewModel : ViewModel() {
     }
 //TODO 终于做完啦 该做班级选择了！
     fun onSchoolSelected(school: School) {
-        Log.i("SettingViewModel", "Selected school: $school")
+        Log.d("SettingViewModel", "Selected school: $school")
         isSchoolListVisible.postValue(false)
         val AllClasses = fetchAllNotGraduateClasses(school.tenantId)
-        Log.i("SettingViewModel", "All classes: ${AllClasses}")
+        Log.d("SettingViewModel", "All classes: ${AllClasses}")
 
 
     }
@@ -146,7 +146,7 @@ class SettingViewModel : ViewModel() {
         val selectedGrade = resultGetClasses?.find { it.classId == gradeId }
         selectedGrade?.let {
             val classList = mutableListOf<ClassItem>()
-            Log.i("GradeFinder", "Found Class: ${it.className}, Class ID: ${it.classId}")
+            Log.d("GradeFinder", "Found Class: ${it.className}, Class ID: ${it.classId}")
             val childs = it.childs // List<ClassBean>
             childs!!.forEach { child ->
                 val classItem = ClassItem(child.classId, child.className)
@@ -154,12 +154,12 @@ class SettingViewModel : ViewModel() {
 
             }
             _classNamesLiveData.postValue(classList)
-            Log.i("GradeFinder", "Class: ${classList}")
+            Log.d("GradeFinder", "Class: ${classList}")
 
         } ?: run {
             Log.w("GradeFinder", "No class found with ID: $gradeId")
         }
-        //Log.i("ViewModel", "Grade selected. ID = $gradeId")
+        //Log.d("ViewModel", "Grade selected. ID = $gradeId")
     }
     fun onClassSelected(classId: Int){
         _selectedClassId.value = classId

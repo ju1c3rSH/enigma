@@ -19,10 +19,10 @@ class SchoolAdapter(private val vm: SettingViewModel, private var dataList: List
 
     override fun onBindViewHolder(holder: SchoolViewHolder, position: Int) {
         val school = dataList[position]
-        Log.i("SchoolAdapter", "Binding school name: ${school.schoolName}")
+        Log.d("SchoolAdapter", "Binding school name: ${school.schoolName}")
         holder.bind(school)
         holder.schoolNameTV.setOnClickListener {
-            Log.i("SchoolAdapter", "Clicked school name: ${school.schoolName}")
+            Log.d("SchoolAdapter", "Clicked school name: ${school.schoolName}")
             (vm.onSchoolSelected(school))
         }
 
@@ -44,12 +44,12 @@ class SchoolViewHolder(private val binding: ItemSchoolSelectBinding,private val 
         binding.tvSchoolName.text = school.schoolName
         /*
         binding.root.setOnClickListener{
-            Log.i("SchoolViewHolder", "Clicked school name: ${school.schoolName} \n ${school.schoolId}")
+            Log.d("SchoolViewHolder", "Clicked school name: ${school.schoolName} \n ${school.schoolId}")
         }
 
          */
 
-        Log.i("SchoolViewHolder", "Binding school name: ${school.schoolName}")
+        Log.d("SchoolViewHolder", "Binding school name: ${school.schoolName}")
     }
     val schoolNameTV = binding.tvSchoolName
 

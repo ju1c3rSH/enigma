@@ -57,10 +57,10 @@ class NotificationsFragment : Fragment() {
             when (state) {
                 is DataState.Loading -> {
 
-                    Log.i("NotificationsFragment", "Loading...")
+                    Log.d("NotificationsFragment", "Loading...")
                 }
                 is DataState.Success -> {
-                    Log.i("NotificationsFragment", "Success: ${state.data}")
+                    Log.d("NotificationsFragment", "Success: ${state.data}")
                     binding.textViewNameENG.text = state.data.studentNamePinyin
                     binding.textViewName.text= state.data.studentName
                     binding.textViewWhere.text = state.data.className

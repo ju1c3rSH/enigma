@@ -59,7 +59,7 @@ class OOBEActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 settingViewModel.schoolInput.value = s?.toString() ?: ""
-                Log.i("TAG", "${settingViewModel.schoolInput.value}")
+                Log.d("TAG", "${settingViewModel.schoolInput.value}")
             }
             override fun afterTextChanged(s: Editable?) {
             }
@@ -77,15 +77,15 @@ class OOBEActivity : AppCompatActivity() {
             val selectedClassId = settingViewModel.selectedGradeId.value
             val enteredCardNumber = binding.CrdNumber.text.toString()
             enteredName?.toast()
-            Log.i("OOBEActivity", "Name: $enteredName, ClassId: $selectedClassId")
+            Log.d("OOBEActivity", "Name: $enteredName, ClassId: $selectedClassId")
             if (enteredName!!.isNotEmpty() && selectedClassId != null ) {
                 if (enteredName != null) {
                     settingViewModel.submitStudentData(enteredName, selectedClassId,enteredCardNumber)
                 }
-                Log.i("OOBEActivity", "Name: $enteredName, ClassId: $selectedClassId")
+                Log.d("OOBEActivity", "Name: $enteredName, ClassId: $selectedClassId")
                 //get("isFirst", "yes").toast()
                 SettingUtils.put("isFirst", false)
-                Log.i("ST",get("isFirst",true).toString())
+                Log.d("ST",get("isFirst",true).toString())
                 startActivity(Intent(this, MainActivity::class.java))
             } else {
                 Log.e("OOBEActivity", "Name or ClassId is missing!")
@@ -124,7 +124,7 @@ class OOBEActivity : AppCompatActivity() {
             }
 
             if (!isValid) {
-                Log.i("TAG", "Invalid data")
+                Log.d("TAG", "Invalid data")
                 tv_ntfc.text = "Invalid data"
                 return@setOnClickListener
             } else {
@@ -145,23 +145,23 @@ class OOBEActivity : AppCompatActivity() {
         val selectedClassId = settingViewModel.selectedGradeId.value
         val enteredCardNumber = binding.CrdNumber.text.toString()
 
-        if (enteredName.isNotEmpty() && selectedClassId != null) {
+        if (enteredName.isNotEmpty() && selectedClassId != null && enteredCardNumber.isNotEmpty()) {
             settingViewModel.submitStudentData(enteredName, selectedClassId, enteredCardNumber)
-            Log.i("OOBEActivity", "Name: $enteredName, ClassId: $selectedClassId")
+            Log.d("OOBEActivity", "Name: $enteredName, ClassId: $selectedClassId")
             SettingUtils.put("isFirst", false)
             startActivity(Intent(this, MainActivity::class.java))
         } else {
             Log.e("OOBEActivity", "Name or ClassId is missing!")
-            "Name or ClassId is missing!".toast()
+            "请正确输入!".toast()
         }
     }
     private fun setupGradeSpinner() {
         settingViewModel.gradeNamesLiveData.observe(this, Observer { gradeITEM ->
             if (gradeITEM.isNullOrEmpty()) {
-                Log.i("StET", "No class names available")
+                Log.d("StET", "No class names available")
                 return@Observer
             }
-            Log.i("gradeName22", "$gradeITEM")
+            Log.d("gradeName22", "$gradeITEM")
             val gradeNameList = gradeITEM.map { it.gradeName }
             gradeSpinAdapter.clear()
             gradeSpinAdapter.addAll(gradeNameList)
@@ -179,7 +179,7 @@ class OOBEActivity : AppCompatActivity() {
         binding.ETGrade.setOnItemClickListener { parent, view, position, id ->
             val selectedGradeItem = settingViewModel.gradeNamesLiveData.value?.get(position)
             selectedGradeItem?.let {
-                Log.i("StET", "Selected Grade ID: ${it.gradeId}, Grade Name: ${it.gradeName}")
+                Log.d("StET", "Selected Grade ID: ${it.gradeId}, Grade Name: ${it.gradeName}")
                 settingViewModel.onGradeSelected(it.gradeId)
             }
         }
@@ -188,10 +188,10 @@ class OOBEActivity : AppCompatActivity() {
     private fun setupClassSpinner() {
         settingViewModel.classNamesLiveData.observe(this, Observer { classITEM ->
             if (classITEM.isNullOrEmpty()) {
-                Log.i("StET", "No class names available")
+                Log.d("StET", "No class names available")
                 return@Observer
             }
-            Log.i("className", "$classITEM")
+            Log.d("className", "$classITEM")
             val classNameList = classITEM.map { it.className }
             classSpinAdapter.clear()
             classSpinAdapter.addAll(classNameList)
@@ -208,7 +208,7 @@ class OOBEActivity : AppCompatActivity() {
         binding.ETClass.setOnItemClickListener { parent, view, position, id ->
             val selectedClassItem = settingViewModel.classNamesLiveData.value?.get(position)
             selectedClassItem?.let {
-                Log.i("StET", "Selected Class ID: ${it.classId}, Class Name: ${it.className}")
+                Log.d("StET", "Selected Class ID: ${it.classId}, Class Name: ${it.className}")
                 settingViewModel.onGradeSelected(it.classId)
             }
         }

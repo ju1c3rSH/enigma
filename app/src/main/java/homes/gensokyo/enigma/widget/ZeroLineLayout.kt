@@ -15,7 +15,7 @@ class ZeroLineLayout(context: Context, attr: AttributeSet) : LinearLayout(contex
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(paramMotionEvent: MotionEvent): Boolean {
-        Log.i("ZeroLineLayout", paramMotionEvent.toString())
+        Log.d("ZeroLineLayout", paramMotionEvent.toString())
         if (isClickable) {
             if (paramMotionEvent.action != 0) {
                 if (3 == paramMotionEvent.action || 1 == paramMotionEvent.action) animateToNormal()

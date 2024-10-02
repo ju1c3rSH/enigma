@@ -39,6 +39,9 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
     private val _memberFlow = MutableLiveData<memberflowbean?>()
     val memberFlow : MutableLiveData<memberflowbean?> = _memberFlow
 
+    private val _memberFlowAll = MutableLiveData<memberflowbean?>()
+    val memberFlowAll : MutableLiveData<memberflowbean?> = _memberFlowAll
+
     private val _queryData = MutableLiveData<QueryResponse>()
     val queryData: LiveData<QueryResponse> = _queryData
 
@@ -55,7 +58,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
             flow {
                 while (true) {
                     emit(Unit)
-                    Log.i("startPeriodicRefresh", intervalMillis.toString())
+                    Log.d("startPeriodicRefresh", intervalMillis.toString())
                     if (intervalMillis != null) {
                         delay(intervalMillis)
                     }
@@ -69,9 +72,9 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
     private fun findStudentIndex(resultKid: List<Student>?): Int {
         val savedName = get("studentName","默认名字")
         resultKid?.forEachIndexed { index, student ->
-            //Log.i("findStudentIndex", "savedName: ${savedName}")
+            //Log.d("findStudentIndex", "savedName: ${savedName}")
             if (student.studentName == savedName) {
-                Log.i("findStudentIndex", "savedName: ${savedName} + $index")
+                Log.d("findStudentIndex", "savedName: ${savedName} + $index")
                 return index
             }
         }
@@ -85,7 +88,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                 val cipherText = CiperTextUtil.encrypt(get("wxOaOpenid","000"))
                 val resultGetRole = repository.fetchRole(cipherText, AppConstants.headerMap)
                 resultGetRole?.let {
-                    Log.i("UsrMdl", "Received Role info: $it ；$cipherText   11"  +get("wxOaOpenid","000").toString())
+                    Log.d("UsrMdl", "Received Role info: $it ；$cipherText   11"  +get("wxOaOpenid","000").toString())
                 }
 
                 val resultLogin = repository.doLogin(AppConstants.headerMap)
@@ -96,14 +99,14 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     .setCopyPersonCode(get("kidUuid","111"))
                     .setTypeCode(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11))
                     .build()
-                Log.i("queryData", "Query info: $qrBuild")
+                Log.d("queryData", "Query info: $qrBuild")
 
                 val resultQuery = repository.queryData(AppConstants.headerMap, qrBuild )!!
                 resultQuery?.let {
-                    Log.i("queryData", "Received Query info: $it")
+                    Log.d("queryData", "Received Query info: $it")
                 }
                 _queryData.postValue(resultQuery)
-                //Log.i("queryData", "Received Query info: $resultQuery")
+                //Log.d("queryData", "Received Query info: $resultQuery")
 
                 val resultKid = repository.fetchStudents(AppConstants.headerMap)
 
@@ -116,7 +119,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                 /*
                 val resultBalance = repository.fetchBalance(AppConstants.headerMap)
                 if (resultBalance != null) {
-                    Log.i("UsrMdl", "Received Balance info: $resultBalance")
+                    Log.d("UsrMdl", "Received Balance info: $resultBalance")
 
                 } else {
                     Log.e("UsrMdl", "Failed to fetch balance") // 记录错误信息
@@ -124,7 +127,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
 
                 }
 
-                Log.i("startDat",  DateUtils.Date2Str(-10,true) )
+                Log.d("startDat",  DateUtils.Date2Str(-10,true) )
                 val memberFlowRequest = MemberFlowJsonBuilder(
                     get("kidUuid","1111"),
                     listOf(2, 5, 6, 7),
@@ -144,12 +147,25 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                         listOf(2, 5, 6, 7),
                         7,
                         1,
-                        100,
-                        DateUtils.Date2Str(-10,true),
+                        1000,
+                        DateUtils.Date2Str(0,true),
                         DateUtils.Date2Str(1)
                     )
                     repository.fetchMemberFlow(memberFlowRequest, AppConstants.headerMap)
                 }
+                val resultMemberFlowAllDeferred = async {
+                    val memberFlowAllRequest = MemberFlowJsonBuilder(
+                        get("kidUuid","1111"),
+                        listOf(2, 5, 6, 7),
+                        7,
+                        1,
+                        1000,
+                        DateUtils.Date2Str(-360,true),
+                        DateUtils.Date2Str(1)
+                    )
+                    repository.fetchMemberFlow(memberFlowAllRequest, AppConstants.headerMap)
+                }
+
                 fun restartApp() {
 
                     val packageManager = context.packageManager
@@ -160,9 +176,10 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     Runtime.getRuntime().exit(0)
                 }
                 val resultBalance = resultBalanceDeferred.await()!!
+                val resultMemberFlowAll = resultMemberFlowAllDeferred.await()
                 val resultMemberFlow = resultMemberFlowDeferred.await()
                 if(get("unilateralDeclarationCardNumber","fake") != resultBalance.cardNumber){
-                    //Log.i("UsrDataModel", get("unilateralDeclarationCardNumber","fake") + " != " + resultBalance.cardNumber)
+                    //Log.d("UsrDataModel", get("unilateralDeclarationCardNumber","fake") + " != " + resultBalance.cardNumber)
 
                     val editor = sharedPreferences!!.edit()
                     editor.clear()
@@ -184,7 +201,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
 
 
 
-                Log.i("UsrDataModel", "Received MemberFlow info: $resultMemberFlow")
+                Log.d("UsrDataModel", "Received MemberFlow info: $resultMemberFlow")
                 if (resultBalance != null && resultKid != null) {
                     val studentIndex = findStudentIndex(resultKid)
                     val studentName = resultKid[studentIndex].studentName ?: "默认姓名"
@@ -193,8 +210,9 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     val headSculpture = resultKid[studentIndex].headSculpture ?: ""
 
                     if (resultMemberFlow != null) {
-                        Log.i("refreshData", resultMemberFlow.toString())
+                        Log.d("refreshData", resultMemberFlow.toString())
                         _memberFlow.postValue(resultMemberFlow)
+                        _memberFlowAll.postValue(resultMemberFlowAll)
                         _studentData.postValue(
                             DataState.Success(
                                 UserDataBean(
@@ -215,7 +233,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     _studentData.postValue(
                         DataState.Error("err")
                     )
-                    Log.i("refreshData", "resultBalance is null")
+                    Log.d("refreshData", "resultBalance is null")
 
 
                 }

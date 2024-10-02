@@ -20,7 +20,7 @@ object DateUtils {
             offSet?.let { calendar.add(Calendar.DAY_OF_MONTH, it) }
 
             if(isMonthStart) calendar.set(Calendar.DAY_OF_MONTH, 1)
-            Log.i("DateUtils", "Date2Str: ${calendar.time}")
+            Log.d("DateUtils", "Date2Str: ${calendar.time}")
             dataFmt.format(calendar.time)
 
 

@@ -64,28 +64,28 @@ class ZhiWeiDataGetterService : Service() {
 
         suspend private fun fetchData() {
                 if(!isFirstRun){
-                    Log.i("DataService", "isFirst:$isFirstRun")
+                    Log.d("DataService", "isFirst:$isFirstRun")
                     serviceScope.launch {
                     try {
                         val cipherText = CiperTextUtil.encrypt(get("wxOaOpenid","sss"))//这些默认值也许可以更好
                         val resultGetRole = repository.fetchRole(cipherText, AppConstants.headerMap)
                         resultGetRole?.let {
-                            Log.i("DataService", "Received GetRole info: $it")
+                            Log.d("DataService", "Received GetRole info: $it")
                         }
 
                         val resultLogin = repository.doLogin(AppConstants.headerMap)
                         resultLogin?.let {
-                            Log.i("DataService", "Received Login info: $it")
+                            Log.d("DataService", "Received Login info: $it")
                         }
 
                         val resultKid = repository.fetchStudents(AppConstants.headerMap)
                         resultKid?.let {
-                            Log.i("DataService", "Received Student info: $it")
+                            Log.d("DataService", "Received Student info: $it")
                         }
 
                         val resultBalance = repository.fetchBalance(AppConstants.headerMap)
                         resultBalance?.let {
-                            Log.i("DataService", "Received Balance info: $it")
+                            Log.d("DataService", "Received Balance info: $it")
                         }
 
                         val memberFlowRequest = MemberFlowJsonBuilder(
@@ -94,17 +94,28 @@ class ZhiWeiDataGetterService : Service() {
                             7,
                             1,
                             200,
-                            DateUtils.Date2Str(-30,true),
+                            DateUtils.Date2Str(0,true),
                             DateUtils.Date2Str(1)
                         )
                         val resultMemberFlow =
                             repository.fetchMemberFlow(memberFlowRequest, AppConstants.headerMap)
+                        val memberFlowRequestAll = MemberFlowJsonBuilder(
+                            get("kidUuid","ss"),
+                            listOf(2, 5, 6, 7),
+                            7,
+                            1,
+                            1000,
+                            DateUtils.Date2Str(360,true),
+                            DateUtils.Date2Str(1)
+                        )
+                        val resultMemberFlowAll =
+                            repository.fetchMemberFlow(memberFlowRequestAll, AppConstants.headerMap)
                         resultMemberFlow?.let {
                             it.error?.takeIf { it.isNotEmpty() }?.let { error ->
                                 Log.e("DataService", "Error fetching MemberFlow: $error")
                             }
 
-                            Log.i("DataService", "Received MemberFlow info: $it")
+                            Log.d("DataService", "Received MemberFlow info: $it")
 
                         }
                         mapOf("memberFlow" to resultMemberFlow, "balance" to resultBalance)

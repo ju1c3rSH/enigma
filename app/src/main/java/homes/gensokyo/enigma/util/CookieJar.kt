@@ -19,7 +19,7 @@ class MyCookieJar : CookieJar {
 
             for (cookie in cookies) {
                 cookieStore[host]?.add(cookie)
-                Log.i("CookieJarUtils", "Saved cookie for $host: $cookie")
+                Log.d("CookieJarUtils", "Saved cookie for $host: $cookie")
             }
         }
     }
@@ -41,13 +41,13 @@ class MyCookieJar : CookieJar {
                 } else if (cookie != null) {
                     //remove expired cookie
                     iterator.remove()
-                    Log.i("CookieJarUtils", "Removed expired cookie: $cookie")
+                    Log.d("CookieJarUtils", "Removed expired cookie: $cookie")
                 }
             }
 
-            Log.i("CookieJarUtils", "Loaded cookies for $host: $validCookies")
+            Log.d("CookieJarUtils", "Loaded cookies for $host: $validCookies")
         } else {
-            Log.i("CookieJarUtils", "No cookies found for $host")
+            Log.d("CookieJarUtils", "No cookies found for $host")
         }
 
         return validCookies

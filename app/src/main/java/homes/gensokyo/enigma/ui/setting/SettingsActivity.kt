@@ -49,7 +49,7 @@ class SettingsActivity : AppCompatActivity() {
                 val newRate = (newValue as String)
                 if (newRate != null) {
                     put("updateRate", newRate)
-                    Log.i("SettingsFragment", "newRate: $newRate")
+                    Log.d("SettingsFragment", "newRate: $newRate")
                     true
                 } else { false }
             }
@@ -61,7 +61,7 @@ class SettingsActivity : AppCompatActivity() {
             }
             val restartPreference = findPreference<Preference>("restart_app")
             restartPreference?.setOnPreferenceClickListener {
-                Log.i("SettingsFragment", "restart_app")
+                Log.d("SettingsFragment", "restart_app")
                 restartApp()
                 true
             }

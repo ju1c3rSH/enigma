@@ -13,15 +13,16 @@ android {
     namespace = "homes.gensokyo.enigma"
     compileSdk = 34
 
+
     defaultConfig {
         applicationId = "homes.gensokyo.enigma"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.5.0"
+        versionName = "1.7.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionNameSuffix = "@蔓越莓"
+        versionNameSuffix = "@冰糕"
     }
 
     buildTypes {

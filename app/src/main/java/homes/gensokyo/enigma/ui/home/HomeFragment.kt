@@ -45,13 +45,13 @@ class HomeFragment : Fragment() {
             when (state) {
                 is DataState.Loading -> {
 
-                    Log.i("HomeFragment", "Loading...")
+                    Log.d("HomeFragment", "Loading...")
                 }
                 is DataState.Success -> {
 
                     binding.textHome.text = "Debug Build"
                     updateData(state.data)
-                    Log.i("HomeFragment", "Success: ${state.data}")
+                    Log.d("HomeFragment", "Success: ${state.data}")
                 }
                 is DataState.Error -> {
                     Log.e("HomeFragment", "Error: ${state.exception }")

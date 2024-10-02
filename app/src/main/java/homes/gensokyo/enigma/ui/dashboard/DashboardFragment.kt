@@ -52,7 +52,7 @@ class DashboardFragment : Fragment() {
         adapter = ConsumeHistoryAdapter(emptyList())
         recyclerView.adapter = adapter
 
-        usrViewModel.memberFlow.observe(viewLifecycleOwner) { data ->
+        usrViewModel.memberFlowAll.observe(viewLifecycleOwner) { data ->
 
             if (data!!.datas != null ) {
                 adapter = data.datas?.let { ConsumeHistoryAdapter(it) }!!
@@ -60,7 +60,7 @@ class DashboardFragment : Fragment() {
             } else {
                 "数据未准备，请稍后".toast()
             }
-            //Log.i("DashboardFragment", data.datas.toString())
+            //Log.d("DashboardFragment", data.datas.toString())
         }
         return root
     }
