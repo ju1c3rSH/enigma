@@ -13,6 +13,7 @@ import homes.gensokyo.enigma.bean.Student
 import homes.gensokyo.enigma.bean.balanceBean
 import homes.gensokyo.enigma.bean.memberflowbean
 import homes.gensokyo.enigma.util.AppConstants
+import homes.gensokyo.enigma.util.LogUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -41,7 +42,7 @@ class UserRepository {
         return try {
             val response = apiService.Query(headerMap, request)
             if (response.isSuccessful) {
-                //Log.d("queryData", response.toString())
+                //LogUtils.d("queryData", response.toString())
                 return gson.fromJson(response.body(), object : TypeToken<QueryResponse>() {}.type)
             } else {
                 null
@@ -75,7 +76,7 @@ class UserRepository {
         return try {
             val response = apiService.fetchStudents(AppConstants.getAllStudentsOfParentUrl, headerMap)
             if (response.isSuccessful) {
-                Log.d( "fetchStudents", response.body().toString())
+                LogUtils.d( "fetchStudents", response.body().toString())
                 return gson.fromJson(response.body(), object : TypeToken<List<Student>>() {}.type)
             } else {
                 null // Handle unsuccessful response
@@ -91,11 +92,11 @@ class UserRepository {
         return try {
             val response = apiService.fetchBalance(AppConstants.getBalance+ get("kidUuid","111"),headerMap)
             if (response.isSuccessful) {
-                Log.d("fetchBalance111", response.body().toString() + get("kidUuid","111"))
+                LogUtils.d("fetchBalance111", response.body().toString() + get("kidUuid","111"))
                 return gson.fromJson(response.body(), balanceBean::class.java)
             } else {
                 // Handle error, e.g., throw an exception or return null
-                Log.d("fetchBalance", response.errorBody().toString())
+                LogUtils.d("fetchBalance", response.errorBody().toString())
                 null
             }
         } catch (e: Exception) {
@@ -107,7 +108,7 @@ class UserRepository {
         return try {
             val response = apiService.fetchAllowedSchoolList(AppConstants.getAllowSearchSchoolUrl + schoolName, headerMap)
             if (response.isSuccessful) {
-                Log.d("fetchAllowedSearchSchools", response.body().toString())
+                LogUtils.d("fetchAllowedSearchSchools", response.body().toString())
                 val listType = object : TypeToken<List<School>>() {}.type
                 val schoolList: List<School> = gson.fromJson(response.body(), listType)
 
@@ -128,7 +129,7 @@ class UserRepository {
                 headerMap
             )
             if (response.isSuccessful) {
-                Log.d("fetchAllNotGraduateClasses4Tenant", response.body().toString())
+                LogUtils.d("fetchAllNotGraduateClasses4Tenant", response.body().toString())
                 val listType = object : TypeToken<List<GradeBean>>() {}.type
                 val gradeList: List<GradeBean> = gson.fromJson(response.body(), listType)
                 return gradeList
@@ -152,11 +153,11 @@ class UserRepository {
                 if (response.body()!!.isEmpty()){
                     return null
                 }
-                //Log.d("DETAILS", response.body().toString())
+                //LogUtils.d("DETAILS", response.body().toString())
                 val listType = object : TypeToken<List<Student>>() {}.type
                 val sul: List<Student> = gson.fromJson(response.body(), listType)
 
-                Log.d("DETAILS", sul[0].studentName)
+                LogUtils.d("DETAILS", sul[0].studentName)
                 return sul[0]
 
                 //val listType = object : TypeToken<List<Student>>() {}.type
@@ -180,12 +181,12 @@ class UserRepository {
                 return memberflowbean(error = "Not been login")
             }
             val postJson = gson.toJson(json)
-            Log.d("fetchMemberFlow", "Requesting MemberFlow with JSON: $postJson and headers: $headerMap")
+            LogUtils.d("fetchMemberFlow", "Requesting MemberFlow with JSON: $postJson and headers: $headerMap")
             val response = apiService.fetchMemberFlow(AppConstants.getMemberFlow, headerMap, postJson)
 
             if (response.isSuccessful) {
                 val responseBody = response.body()
-                Log.d("fetchMemberFlow", "Successfully fetched MemberFlow: $responseBody")
+                LogUtils.d("fetchMemberFlow", "Successfully fetched MemberFlow: $responseBody")
                 return  gson.fromJson(responseBody, memberflowbean::class.java)
             } else {
                 Log.e("fetchMemberFlow", "API call failed, Response Code: ${response.code()}, Response Message: ${response.message()}")

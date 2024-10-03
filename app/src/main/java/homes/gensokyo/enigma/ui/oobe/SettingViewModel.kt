@@ -9,6 +9,7 @@ import homes.gensokyo.enigma.adapter.SchoolAdapter
 import homes.gensokyo.enigma.bean.GradeBean
 import homes.gensokyo.enigma.bean.School
 import homes.gensokyo.enigma.util.AppConstants
+import homes.gensokyo.enigma.util.LogUtils
 import homes.gensokyo.enigma.util.SettingUtils.put
 import homes.gensokyo.enigma.util.TextUtils.toast
 import kotlinx.coroutines.CoroutineScope
@@ -58,15 +59,15 @@ class SettingViewModel : ViewModel() {
                     schoolInput.value.toString(),
                     AppConstants.headerMap
                 )
-                Log.d("SettingViewModel", "Received school info: $resultGetschool")
+                LogUtils.d("SettingViewModel", "Received school info: $resultGetschool")
 
                 resultGetschool?.let {
                     withContext(Dispatchers.Main) {
                         _schoolData.postValue(it)
                         isSchoolListVisible.postValue(true)
-                        Log.d("SettingViewModel", "isSchoolListVisible: ${isSchoolListVisible.value}")
+                        LogUtils.d("SettingViewModel", "isSchoolListVisible: ${isSchoolListVisible.value}")
 
-                        Log.d("SettingViewModel", "Updated school adapter data ${schoolAdapter.getItemCount()} ")
+                        LogUtils.d("SettingViewModel", "Updated school adapter data ${schoolAdapter.getItemCount()} ")
                     }
                 }
             } catch (e: Exception) {
@@ -82,16 +83,16 @@ class SettingViewModel : ViewModel() {
                     tenantId,
                     AppConstants.headerMap
                 )
-                Log.d("SettingViewModel", "Received class info: $resultGetClasses")
+                LogUtils.d("SettingViewModel", "Received class info: $resultGetClasses")
                 if (resultGetClasses != null) {
                     val gradeList = mutableListOf<GradeItem>()
                     resultGetClasses!!.forEachIndexed { index, gradeInfo ->
-                        //Log.d("SettingViewModel", "Class $index: ${classInfo.className}")
+                        //LogUtils.d("SettingViewModel", "Class $index: ${classInfo.className}")
                         val gradeItem = GradeItem(gradeInfo.classId, gradeInfo.className)
                         gradeList.add(gradeItem)
-                        //Log.d("SettingViewModel", "Added ClassItem: $classItem")
+                        //LogUtils.d("SettingViewModel", "Added ClassItem: $classItem")
                     }
-                    Log.d("SettingViewModel", "Grade list: ${gradeList}")
+                    LogUtils.d("SettingViewModel", "Grade list: ${gradeList}")
                     _gradeNamesLiveData.postValue(gradeList)
                 }
 
@@ -116,12 +117,12 @@ class SettingViewModel : ViewModel() {
                     "请确认您输入的信息没有错误。".toast()
 
                 } else {
-                        Log.d("SettingViewModel", "Received student info: ${result.studentId}")
+                        LogUtils.d("SettingViewModel", "Received student info: ${result.studentId}")
                         put("isFirst", false)
                         put("kidUuid",result.uuid)
                         put("wxOaOpenid",result.parentStudents[0].parent.wxOaOpenid)
                         put("studentName",enteredName)
-                        put("unilateralDeclarationCardNumber",enteredCardNumber)// 单方面声明的卡号
+                        put("unilateralDeclarationCardNumber",enteredCardNumber)//单方面声明的卡号
                     }
                 } catch (e:Exception){
                 Log.e("SettingViewModel", "Error fetching student info: ${e.message}")
@@ -131,10 +132,10 @@ class SettingViewModel : ViewModel() {
     }
 //TODO 终于做完啦 该做班级选择了！
     fun onSchoolSelected(school: School) {
-        Log.d("SettingViewModel", "Selected school: $school")
+        LogUtils.d("SettingViewModel", "Selected school: $school")
         isSchoolListVisible.postValue(false)
         val AllClasses = fetchAllNotGraduateClasses(school.tenantId)
-        Log.d("SettingViewModel", "All classes: ${AllClasses}")
+        LogUtils.d("SettingViewModel", "All classes: ${AllClasses}")
 
 
     }
@@ -146,7 +147,7 @@ class SettingViewModel : ViewModel() {
         val selectedGrade = resultGetClasses?.find { it.classId == gradeId }
         selectedGrade?.let {
             val classList = mutableListOf<ClassItem>()
-            Log.d("GradeFinder", "Found Class: ${it.className}, Class ID: ${it.classId}")
+            LogUtils.d("GradeFinder", "Found Class: ${it.className}, Class ID: ${it.classId}")
             val childs = it.childs // List<ClassBean>
             childs!!.forEach { child ->
                 val classItem = ClassItem(child.classId, child.className)
@@ -154,12 +155,12 @@ class SettingViewModel : ViewModel() {
 
             }
             _classNamesLiveData.postValue(classList)
-            Log.d("GradeFinder", "Class: ${classList}")
+            LogUtils.d("GradeFinder", "Class: ${classList}")
 
         } ?: run {
             Log.w("GradeFinder", "No class found with ID: $gradeId")
         }
-        //Log.d("ViewModel", "Grade selected. ID = $gradeId")
+        //LogUtils.d("ViewModel", "Grade selected. ID = $gradeId")
     }
     fun onClassSelected(classId: Int){
         _selectedClassId.value = classId

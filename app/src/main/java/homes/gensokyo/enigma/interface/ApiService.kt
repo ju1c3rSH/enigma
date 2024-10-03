@@ -1,14 +1,15 @@
 package homes.gensokyo.enigma.`interface`
-import androidx.room.Query
+
+
 import homes.gensokyo.enigma.bean.QueryRequest
-import homes.gensokyo.enigma.bean.QueryResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.HeaderMap
+import retrofit2.http.Headers
 import retrofit2.http.POST
-
-
-import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.QueryMap
+import retrofit2.http.Url
 
 interface ApiService {
 //TODO 这一块有很大弊病。可以通过设置不同的client的不同baseURl实现解耦。
@@ -60,7 +61,7 @@ interface ApiService {
     suspend fun fetchAllowedSchoolList(
         @Url url: String,
         @HeaderMap headers: Map<String, String>
-        ): Response<String>
+    ): Response<String>
 
     @GET
     suspend fun fetchAllNotGraduateClasses4Tenant(

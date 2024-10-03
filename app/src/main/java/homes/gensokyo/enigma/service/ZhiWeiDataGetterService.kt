@@ -16,6 +16,7 @@ import homes.gensokyo.enigma.util.CiperTextUtil
 import homes.gensokyo.enigma.util.NetworkUtils
 import homes.gensokyo.enigma.util.AppConstants
 import homes.gensokyo.enigma.util.DateUtils
+import homes.gensokyo.enigma.util.LogUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
 import homes.gensokyo.enigma.viewmodel.SharedViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -64,28 +65,28 @@ class ZhiWeiDataGetterService : Service() {
 
         suspend private fun fetchData() {
                 if(!isFirstRun){
-                    Log.d("DataService", "isFirst:$isFirstRun")
+                    LogUtils.d("DataService", "isFirst:$isFirstRun")
                     serviceScope.launch {
                     try {
                         val cipherText = CiperTextUtil.encrypt(get("wxOaOpenid","sss"))//这些默认值也许可以更好
                         val resultGetRole = repository.fetchRole(cipherText, AppConstants.headerMap)
                         resultGetRole?.let {
-                            Log.d("DataService", "Received GetRole info: $it")
+                            LogUtils.d("DataService", "Received GetRole info: $it")
                         }
 
                         val resultLogin = repository.doLogin(AppConstants.headerMap)
                         resultLogin?.let {
-                            Log.d("DataService", "Received Login info: $it")
+                            LogUtils.d("DataService", "Received Login info: $it")
                         }
 
                         val resultKid = repository.fetchStudents(AppConstants.headerMap)
                         resultKid?.let {
-                            Log.d("DataService", "Received Student info: $it")
+                            LogUtils.d("DataService", "Received Student info: $it")
                         }
 
                         val resultBalance = repository.fetchBalance(AppConstants.headerMap)
                         resultBalance?.let {
-                            Log.d("DataService", "Received Balance info: $it")
+                            LogUtils.d("DataService", "Received Balance info: $it")
                         }
 
                         val memberFlowRequest = MemberFlowJsonBuilder(
@@ -105,7 +106,7 @@ class ZhiWeiDataGetterService : Service() {
                             7,
                             1,
                             1000,
-                            DateUtils.Date2Str(360,true),
+                            DateUtils.Date2Str(get("dashboardUpdateLimit",-50),true),
                             DateUtils.Date2Str(1)
                         )
                         val resultMemberFlowAll =
@@ -115,7 +116,7 @@ class ZhiWeiDataGetterService : Service() {
                                 Log.e("DataService", "Error fetching MemberFlow: $error")
                             }
 
-                            Log.d("DataService", "Received MemberFlow info: $it")
+                            LogUtils.d("DataService", "Received MemberFlow info: $it")
 
                         }
                         mapOf("memberFlow" to resultMemberFlow, "balance" to resultBalance)

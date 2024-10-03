@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import homes.gensokyo.enigma.bean.QueryData
 import homes.gensokyo.enigma.bean.School
 import homes.gensokyo.enigma.databinding.ItemQueryBinding
+import homes.gensokyo.enigma.util.LogUtils
 
 class QueryAdapter(private var logList: List<QueryData>) : RecyclerView.Adapter<QueryAdapter.QueryHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QueryHolder {
@@ -23,11 +24,10 @@ class QueryAdapter(private var logList: List<QueryData>) : RecyclerView.Adapter<
         val timeText: TextView = binding.timeText
     }
 
-
     @SuppressLint("NotifyDataSetChanged")
     fun updateData(newLogList: List<QueryData>) {
         this.logList = newLogList
-        Log.d("TAG", "Updating data in adapter: ${newLogList.size} items")
+        LogUtils.d("TAG", "Updating data in adapter: ${newLogList.size} items")
         notifyDataSetChanged()
     }
     override fun onBindViewHolder(holder: QueryHolder, position: Int) {

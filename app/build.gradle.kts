@@ -18,21 +18,28 @@ android {
         applicationId = "homes.gensokyo.enigma"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.7.1"
+        versionCode = 31
+        versionName = "1.9.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionNameSuffix = "@冰糕"
+        versionNameSuffix = "@披萨"
     }
 
     buildTypes {
-        release {
+        getByName("debug") {
+            buildConfigField("boolean", "IS_DEBUG", "true")
+
+        }
+        getByName("release") {
+
+            buildConfigField("boolean", "IS_DEBUG", "false")
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-        }
+
     }
 
     compileOptions {
@@ -40,15 +47,25 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
+        buildConfig = true
+
         dataBinding = true
         viewBinding = true
     }
 }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        viewBinding = true
+    }
+    ndkVersion = "25.1.8937393"
 
-dependencies {
+    dependencies {
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
@@ -76,5 +93,5 @@ dependencies {
     implementation(libs.androidx.activity)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.espresso.core) }
 }

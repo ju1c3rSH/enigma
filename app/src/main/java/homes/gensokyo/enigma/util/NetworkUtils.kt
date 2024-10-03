@@ -13,6 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class NetworkUtils {
 
     companion object {
+        private const val DEFAULT_BASE_URL = "http://wx.ivxiaoyuan.com"
         private val cookieJar = MyCookieJar()
         private val client = OkHttpClient.Builder()
             .cookieJar(cookieJar)
@@ -24,6 +25,14 @@ class NetworkUtils {
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+        fun createRetrofit(baseUrl: String = DEFAULT_BASE_URL): Retrofit {
+            return Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(client)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
     }
     fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

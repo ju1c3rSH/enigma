@@ -15,6 +15,7 @@ import homes.gensokyo.enigma.MainApplication.Companion.repository
 import homes.gensokyo.enigma.databinding.FragmentNotificationsBinding
 import homes.gensokyo.enigma.ui.about.AboutActivity
 import homes.gensokyo.enigma.ui.setting.SettingsActivity
+import homes.gensokyo.enigma.util.LogUtils
 import homes.gensokyo.enigma.viewmodel.DataState
 import homes.gensokyo.enigma.viewmodel.UsrdataModel
 import homes.gensokyo.enigma.viewmodel.UsrdataModelFactory
@@ -57,10 +58,10 @@ class NotificationsFragment : Fragment() {
             when (state) {
                 is DataState.Loading -> {
 
-                    Log.d("NotificationsFragment", "Loading...")
+                    LogUtils.d("NotificationsFragment", "Loading...")
                 }
                 is DataState.Success -> {
-                    Log.d("NotificationsFragment", "Success: ${state.data}")
+                    LogUtils.d("NotificationsFragment", "Success: ${state.data}")
                     binding.textViewNameENG.text = state.data.studentNamePinyin
                     binding.textViewName.text= state.data.studentName
                     binding.textViewWhere.text = state.data.className

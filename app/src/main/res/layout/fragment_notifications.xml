@@ -23,25 +23,36 @@
             android:src="@drawable/renko" />
 
         <TextView
-            android:id="@+id/textView_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/imageView"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="-167dp"
-            android:layout_marginEnd="33dp"
-            android:text="宇佐见莲子"
-            android:textSize="25sp" />
-
-        <TextView
             android:id="@+id/textView_cardNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textView_name_ENG"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="7dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="8dp"
             android:text="ID:7902233325"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/textView_name_ENG"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView_name"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="USAMI RENKO"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/textView_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageView"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="-162dp"
+            android:layout_marginEnd="7dp"
+            android:text="宇佐见莲子"
             android:textSize="25sp" />
 
         <TextView
@@ -53,17 +64,6 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="京都大学物理系"
-            android:textSize="25sp" />
-
-        <TextView
-            android:id="@+id/textView_name_ENG"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textView_name"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="15dp"
-            android:text="USAMI RENKO"
             android:textSize="25sp" />
 
     </RelativeLayout>

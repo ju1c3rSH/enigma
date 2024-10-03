@@ -6,8 +6,17 @@
         <EditTextPreference
             app:key="updateRate"
             app:title="@string/update_rate"
+            app:defaultValue="60000"
+            app:dialogMessage="推荐值：60000 \n过小将导致手机卡顿和占满网速\n过大会导致数据更新不及时\n1秒=1000毫秒"
             android:summary="@string/clear_preferences_summary"
             app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="dashboard_update_limit"
+            app:title="@string/dashboard_update_limit"
+            app:useSimpleSummaryProvider="true"
+            app:dialogMessage="推荐值：50 \n过大可能导致手机卡顿"
+            android:defaultValue="过大可能导致手机卡顿"
+            app:defaultValue="50"/>
         <Preference
             android:key="clear_preferences"
             app:title="@string/clear_preferences"

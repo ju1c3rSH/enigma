@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.widget.LinearLayout
+import homes.gensokyo.enigma.util.LogUtils
 
 //import homes.gensokyo.zhiweixiaoyuan_rebuild.databinding.ZeroTitleViewBinding
 //written by sky233
@@ -15,7 +16,7 @@ class ZeroLineLayout(context: Context, attr: AttributeSet) : LinearLayout(contex
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(paramMotionEvent: MotionEvent): Boolean {
-        Log.d("ZeroLineLayout", paramMotionEvent.toString())
+        LogUtils.d("ZeroLineLayout", paramMotionEvent.toString())
         if (isClickable) {
             if (paramMotionEvent.action != 0) {
                 if (3 == paramMotionEvent.action || 1 == paramMotionEvent.action) animateToNormal()

@@ -60,7 +60,7 @@ class DashboardFragment : Fragment() {
             } else {
                 "数据未准备，请稍后".toast()
             }
-            //Log.d("DashboardFragment", data.datas.toString())
+            //LogUtils.d("DashboardFragment", data.datas.toString())
         }
         return root
     }

@@ -5,12 +5,15 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import homes.gensokyo.enigma.R
+import homes.gensokyo.enigma.util.LogUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
 import homes.gensokyo.enigma.util.SettingUtils.put
 import homes.gensokyo.enigma.util.SettingUtils.sharedPreferences
@@ -27,31 +30,39 @@ class SettingsActivity : AppCompatActivity() {
                 .replace(R.id.settings, SettingsFragment())
                 .commit()
         }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        enableEdgeToEdge()
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
-        private var intervalMillis: Long = 15000
+        //private var intervalMillis: Long = 15000
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
-
+            val dashboardLimitPreference = findPreference<EditTextPreference>("dashboard_update_limit")
             val updateRatePreference = findPreference<EditTextPreference>("updateRate")
-            val savedRate = get("updateRate", "15000")?.toLongOrNull() ?: 15000
+            //val savedRate = get("updateRate", "15000")?.toLongOrNull() ?: 15000
             val clearPref = findPreference<Preference>("clear_preferences")
 
-            intervalMillis = savedRate
+            //intervalMillis = savedRate
             clearPref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 showClearConfirmationDialog()
                 true
             }
-
+            dashboardLimitPreference?.setOnPreferenceChangeListener { preference, newValue ->
+                val newLimit = (newValue as String)
+                run {
+                    put("dashboardUpdateLimit", -newLimit.toIntOrNull()!!)
+                    LogUtils.d("SettingsFragment", "newLimit: $newLimit")
+                    true
+                }
+            }
             updateRatePreference?.setOnPreferenceChangeListener { preference, newValue ->
                 val newRate = (newValue as String)
-                if (newRate != null) {
+                run {
                     put("updateRate", newRate)
-                    Log.d("SettingsFragment", "newRate: $newRate")
+                    LogUtils.d("SettingsFragment", "newRate: $newRate")
                     true
-                } else { false }
+                }
             }
 
             val appDetailsPreference = findPreference<Preference>("app_details")
@@ -61,13 +72,20 @@ class SettingsActivity : AppCompatActivity() {
             }
             val restartPreference = findPreference<Preference>("restart_app")
             restartPreference?.setOnPreferenceClickListener {
-                Log.d("SettingsFragment", "restart_app")
+                LogUtils.d("SettingsFragment", "restart_app")
                 restartApp()
                 true
             }
         }
 
-
+        override fun onOptionsItemSelected(item: MenuItem): Boolean {
+            if (item.itemId == android.R.id.home) {
+                activity?.finish()
+                return true
+            }
+            activity?.finish()
+            return super.onOptionsItemSelected(item)
+        }
 
     private fun restartApp() {
         val context = requireContext()

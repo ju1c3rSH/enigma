@@ -16,6 +16,7 @@
     <string name="clear_preferences">清除软件数据</string>
     <string name="clear_preferences_summary">清除软件数据, 包括登录信息、缓存等</string>
     <string name="sync_header">Sync</string>
+    <string name="dashboard_update_limit">仪表板条目限制(天)</string>
     <string name="update_rate">数据更新比率(毫秒)</string>
     <string name="ComingSoon_header">即将到来</string>
     <string name="license_content">一. 本开源项目仅供个人学习交流使用, 方便 Android 端可以便捷的查看校园一卡通的日常使用情况.\n二. 本项目完全免费, 可能存在较多漏洞, 维护者仅保证自己能正常使用, 存在问题请通过项目页 Issues 反馈.\n三. 本项目中所有适配的接口均来自智威智能 (广州智威智能科技有限公司) 旗下智威校园 (ivxiaoyuan), 本项目不对其控制的安全性负责.\n四. 本项目会将个人资料、账户密钥等信息, 缓存在安装设备本地, 不含任何上传个人信息的接口.\n五. 真诚希望智威官方能够推出 `智威校园 For Android`, 使广大用户能用上.\n六. 本项目仅供个人学习交流使用, 切勿进行传播、任何形式的盈利, 未涉及的问题请参见国家有关法律法规, 以国家法律法规为准.\n\n项目仓库地址:\nhttps://github.com/ju1c3rSH/enigma</string>

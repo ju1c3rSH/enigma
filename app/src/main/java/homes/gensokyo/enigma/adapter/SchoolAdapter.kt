@@ -9,6 +9,7 @@ import homes.gensokyo.enigma.bean.School
 
 import homes.gensokyo.enigma.databinding.ItemSchoolSelectBinding
 import homes.gensokyo.enigma.ui.oobe.SettingViewModel
+import homes.gensokyo.enigma.util.LogUtils
 
 class SchoolAdapter(private val vm: SettingViewModel, private var dataList: List<School>) :
     RecyclerView.Adapter<SchoolViewHolder>(){
@@ -19,10 +20,10 @@ class SchoolAdapter(private val vm: SettingViewModel, private var dataList: List
 
     override fun onBindViewHolder(holder: SchoolViewHolder, position: Int) {
         val school = dataList[position]
-        Log.d("SchoolAdapter", "Binding school name: ${school.schoolName}")
+        LogUtils.d("SchoolAdapter", "Binding school name: ${school.schoolName}")
         holder.bind(school)
         holder.schoolNameTV.setOnClickListener {
-            Log.d("SchoolAdapter", "Clicked school name: ${school.schoolName}")
+            LogUtils.d("SchoolAdapter", "Clicked school name: ${school.schoolName}")
             (vm.onSchoolSelected(school))
         }
 
@@ -32,7 +33,7 @@ class SchoolAdapter(private val vm: SettingViewModel, private var dataList: List
     @SuppressLint("NotifyDataSetChanged")
     fun updateData(newSchoolList: List<School>) {
         this.dataList = newSchoolList
-        Log.d("TAG", "Updating data in adapter: ${newSchoolList.size} items")
+        LogUtils.d("TAG", "Updating data in adapter: ${newSchoolList.size} items")
         notifyDataSetChanged()
     }
 }
@@ -44,12 +45,12 @@ class SchoolViewHolder(private val binding: ItemSchoolSelectBinding,private val 
         binding.tvSchoolName.text = school.schoolName
         /*
         binding.root.setOnClickListener{
-            Log.d("SchoolViewHolder", "Clicked school name: ${school.schoolName} \n ${school.schoolId}")
+            LogUtils.d("SchoolViewHolder", "Clicked school name: ${school.schoolName} \n ${school.schoolId}")
         }
 
          */
 
-        Log.d("SchoolViewHolder", "Binding school name: ${school.schoolName}")
+        LogUtils.d("SchoolViewHolder", "Binding school name: ${school.schoolName}")
     }
     val schoolNameTV = binding.tvSchoolName
 

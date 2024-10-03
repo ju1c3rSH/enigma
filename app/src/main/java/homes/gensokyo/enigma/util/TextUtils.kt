@@ -9,8 +9,6 @@ import java.util.Locale
 import java.util.regex.Pattern
 
 object TextUtils {
-
-
     fun String.isUrl(): Boolean {
         val pattern = "^((https?|ftp|file)://)?([a-z0-9-]+\\.)+[a-z0-9]{2,4}.*$"
         val regex = Regex(pattern, RegexOption.IGNORE_CASE)
@@ -33,7 +31,21 @@ object TextUtils {
             arrayOfNulls(0)
         }
     }
+    //TODO 又埋一个石山
+    fun compareVersions(version1: String, version2: String): Int {
+        val versionParts1 = version1.split("@")[0].split(".").map { it.toInt() }
+        val versionParts2 = version2.split("@")[0].split(".").map { it.toInt() }
+        val length = Math.max(versionParts1.size, versionParts2.size)
+        for (i in 0 until length) {
+            val v1 = if (i < versionParts1.size) versionParts1[i] else 0
+            val v2 = if (i < versionParts2.size) versionParts2[i] else 0
 
+            if (v1 != v2) {
+                return v1 - v2
+            }
+        }
+        return 0
+    }
     fun join(separator: String?, vararg elements: String?): StringBuilder? {
         val builder = StringBuilder()
         var hasAdded = false

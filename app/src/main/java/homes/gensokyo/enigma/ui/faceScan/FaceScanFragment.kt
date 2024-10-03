@@ -38,16 +38,8 @@ class FaceScanFragment : Fragment() {
     ): View {
         _binding = FragmentFaceScanBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        // 初始化 RecyclerView
         setupRecyclerView()
-
-        // 观察 ViewModel 中的 queryData
         observeViewModel()
-
-        // 启动数据加载
-        //usrViewModel.fetchQueryData() // 假设你有一个 fetchQueryData 方法来加载数据
-
         return root
     }
 
@@ -62,13 +54,13 @@ class FaceScanFragment : Fragment() {
     private fun observeViewModel() {
         usrViewModel.queryData.observe(viewLifecycleOwner) { queryData ->
             queryData?.let {
-                adapter.updateData(it.datas) // 更新适配器数据
+                adapter.updateData(it.datas)
             }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // 避免内存泄漏
+        _binding = null
     }
 }
