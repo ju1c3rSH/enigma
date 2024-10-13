@@ -55,6 +55,7 @@ class DashboardFragment : Fragment() {
         usrViewModel.memberFlowAll.observe(viewLifecycleOwner) { data ->
 
             if (data!!.datas != null ) {
+
                 adapter = data.datas?.let { ConsumeHistoryAdapter(it) }!!
                 recyclerView.adapter = adapter
             } else {

@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Enigma" parent="ThemeOverlay.Material3.Light">
-
+    <style name="Theme.Enigma" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
     </style>
 </resources>

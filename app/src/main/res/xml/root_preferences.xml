@@ -1,8 +1,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/Theme.Enigma"
+    >
 
     <PreferenceCategory app:title="@string/common_setting_header">
-
         <EditTextPreference
             app:key="updateRate"
             app:title="@string/update_rate"
@@ -11,12 +12,12 @@
             android:summary="@string/clear_preferences_summary"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            android:defaultValue="过大可能导致手机卡顿"
+            app:defaultValue="50"
+            app:dialogMessage="推荐值：50 \n过大可能导致手机卡顿"
             app:key="dashboard_update_limit"
             app:title="@string/dashboard_update_limit"
-            app:useSimpleSummaryProvider="true"
-            app:dialogMessage="推荐值：50 \n过大可能导致手机卡顿"
-            android:defaultValue="过大可能导致手机卡顿"
-            app:defaultValue="50"/>
+            app:useSimpleSummaryProvider="true" />
         <Preference
             android:key="clear_preferences"
             app:title="@string/clear_preferences"

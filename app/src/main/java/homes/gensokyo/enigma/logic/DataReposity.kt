@@ -95,7 +95,6 @@ class UserRepository {
                 LogUtils.d("fetchBalance111", response.body().toString() + get("kidUuid","111"))
                 return gson.fromJson(response.body(), balanceBean::class.java)
             } else {
-                // Handle error, e.g., throw an exception or return null
                 LogUtils.d("fetchBalance", response.errorBody().toString())
                 null
             }

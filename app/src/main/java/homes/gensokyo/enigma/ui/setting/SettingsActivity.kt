@@ -1,20 +1,17 @@
 package homes.gensokyo.enigma.ui.setting
 
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import homes.gensokyo.enigma.R
 import homes.gensokyo.enigma.util.LogUtils
-import homes.gensokyo.enigma.util.SettingUtils.get
 import homes.gensokyo.enigma.util.SettingUtils.put
 import homes.gensokyo.enigma.util.SettingUtils.sharedPreferences
 import homes.gensokyo.enigma.util.TextUtils.toast
@@ -30,39 +27,30 @@ class SettingsActivity : AppCompatActivity() {
                 .replace(R.id.settings, SettingsFragment())
                 .commit()
         }
+        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
+        topAppBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        enableEdgeToEdge()
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
-        //private var intervalMillis: Long = 15000
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
-            val dashboardLimitPreference = findPreference<EditTextPreference>("dashboard_update_limit")
+
             val updateRatePreference = findPreference<EditTextPreference>("updateRate")
-            //val savedRate = get("updateRate", "15000")?.toLongOrNull() ?: 15000
             val clearPref = findPreference<Preference>("clear_preferences")
 
-            //intervalMillis = savedRate
             clearPref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 showClearConfirmationDialog()
                 true
             }
-            dashboardLimitPreference?.setOnPreferenceChangeListener { preference, newValue ->
-                val newLimit = (newValue as String)
-                run {
-                    put("dashboardUpdateLimit", -newLimit.toIntOrNull()!!)
-                    LogUtils.d("SettingsFragment", "newLimit: $newLimit")
-                    true
-                }
-            }
-            updateRatePreference?.setOnPreferenceChangeListener { preference, newValue ->
-                val newRate = (newValue as String)
-                run {
-                    put("updateRate", newRate)
-                    LogUtils.d("SettingsFragment", "newRate: $newRate")
-                    true
-                }
+            updateRatePreference?.setOnPreferenceChangeListener { _, newValue ->
+                put("updateRate", newValue as String)
+                LogUtils.d("SettingsFragment", "newRate: $newValue")
+                true
             }
 
             val appDetailsPreference = findPreference<Preference>("app_details")
@@ -78,52 +66,37 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        override fun onOptionsItemSelected(item: MenuItem): Boolean {
-            if (item.itemId == android.R.id.home) {
-                activity?.finish()
-                return true
-            }
-            activity?.finish()
-            return super.onOptionsItemSelected(item)
+        private fun restartApp() {
+            val context = requireContext()
+            val packageManager = context.packageManager
+            val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+            val componentName = intent?.component
+            val mainIntent = Intent.makeRestartActivityTask(componentName)
+            context.startActivity(mainIntent)
+            Runtime.getRuntime().exit(0)
         }
 
-    private fun restartApp() {
-        val context = requireContext()
-        val packageManager = context.packageManager
-        val intent = packageManager.getLaunchIntentForPackage(context.packageName)
-        val componentName = intent?.component
-        val mainIntent = Intent.makeRestartActivityTask(componentName)
-        context.startActivity(mainIntent)
-        Runtime.getRuntime().exit(0)
-    }
         private fun showClearConfirmationDialog() {
-            val context = requireContext()
-            AlertDialog.Builder(context).apply {
-                setTitle("清除软件数据")
-                setMessage("你确定要清除所有的软件数据及缓存?")
-                setPositiveButton("确定") { _, _ ->
-                    clearPreferences()
-                }
-                setNegativeButton("取消", null)
-                create()
-                show()
-            }
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("清除软件数据")
+                .setMessage("你确定要清除所有的软件数据及缓存?")
+                .setPositiveButton("确定") { _, _ -> clearPreferences() }
+                .setNegativeButton("取消", null)
+                .show()
         }
 
         private fun clearPreferences() {
-
-            val editor = sharedPreferences!!.edit()
-            editor.clear()
-            editor.apply()
+            sharedPreferences!!.edit().clear().apply()
             "Preferences cleared!".toast()
         }
+
         private fun showAppDetailsDialog() {
             val permissions = getAppPermissions()
-            val dialogBuilder = AlertDialog.Builder(requireContext())
-            dialogBuilder.setTitle("软件使用到的权限")
-            dialogBuilder.setMessage(permissions.joinToString("\n"))
-            dialogBuilder.setPositiveButton("确定", null)
-            dialogBuilder.show()
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("软件使用到的权限")
+                .setMessage(permissions.joinToString("\n"))
+                .setPositiveButton("确定", null)
+                .show()
         }
 
         private fun getAppPermissions(): List<String> {
@@ -133,6 +106,5 @@ class SettingsActivity : AppCompatActivity() {
             )
             return packageInfo.requestedPermissions?.toList() ?: emptyList()
         }
-
     }
 }

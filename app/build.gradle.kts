@@ -18,11 +18,11 @@ android {
         applicationId = "homes.gensokyo.enigma"
         minSdk = 24
         targetSdk = 34
-        versionCode = 31
-        versionName = "1.9.1"
+        versionCode = 35
+        versionName = "1.9.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionNameSuffix = "@披萨"
+        versionNameSuffix = "@布丁"
     }
 
     buildTypes {

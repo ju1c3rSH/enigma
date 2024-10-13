@@ -38,8 +38,8 @@ class ConsumeHistoryHolder(
 
     fun bind(memberFlow: memberflowbean.Data,position: Int) {
 
-        binding.tvAmount.text = "消费： ${memberFlow.amount.toString()} "
-        binding.tvBalance.text ="余额： ${memberFlow.balance.toString()} "
+        binding.tvAmount.text = "消费：${memberFlow.amount.toString()}  \n 余额：${memberFlow.balance.toString()}"
+        binding.tvPlace.text ="${memberFlow.deviceName} "
         binding.tvTime.text = memberFlow.consumeTime
         binding.executePendingBindings()
         binding.root.setOnClickListener {
