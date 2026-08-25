@@ -7,25 +7,12 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="homes.gensokyo.enigma.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:name="homes.gensokyo.enigma.ui.overview.OverviewFragment"
+        android:label="@string/title_home" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="homes.gensokyo.enigma.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:name="homes.gensokyo.enigma.ui.records.RecordsFragment"
+        android:label="@string/title_dashboard" />
 
-    <fragment
-        android:id="@+id/navigation_mine"
-        android:name="homes.gensokyo.enigma.ui.notifications.NotificationsFragment"
-        android:label="@string/title_mine"
-        tools:layout="@layout/fragment_notifications" />
-
-    <fragment
-        android:id="@+id/navigation_face_scan"
-        android:name="homes.gensokyo.enigma.ui.faceScan.FaceScanFragment"
-        android:label="@string/face_scan_history"
-        tools:layout="@layout/fragment_face_scan" />
 </navigation>

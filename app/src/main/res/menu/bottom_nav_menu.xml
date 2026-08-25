@@ -11,13 +11,4 @@
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/title_dashboard" />
 
-    <item
-        android:id="@+id/navigation_face_scan"
-        android:icon="@drawable/scanface"
-        android:title="@string/face_scan_history" />
-    <item
-        android:id="@+id/navigation_mine"
-        android:icon="@drawable/ic_person"
-        android:title="@string/title_mine" />
-
 </menu>
