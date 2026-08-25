@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Widget.Theme.智威校园.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-
-    </style>
-
-    <style name="Widget.Theme.智威校园.ButtonBar.Fullscreen" parent="">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-
-    </style>
-    <style name="AlertDialogTheme" parent="MaterialAlertDialog.Material3">
-        <item name="android:background">@color/white</item>
-
-    </style>
-
+    <style name="AlertDialogTheme" parent="MaterialAlertDialog.Material3" />
 
 </resources>
