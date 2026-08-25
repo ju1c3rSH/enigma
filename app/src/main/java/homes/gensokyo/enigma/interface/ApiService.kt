@@ -57,23 +57,25 @@ interface ApiService {
         @Body requestBody: String
     ): Response<String>
 
-    @GET
+    @POST
     suspend fun fetchAllowedSchoolList(
         @Url url: String,
-        @HeaderMap headers: Map<String, String>
+        @HeaderMap headers: Map<String, String>,
+        @Body body: String
     ): Response<String>
 
-    @GET
+    @POST
     suspend fun fetchAllNotGraduateClasses4Tenant(
         @Url url: String,
-        @HeaderMap headers: Map<String, String>
+        @HeaderMap headers: Map<String, String>,
+        @Body body: String
     ): Response<String>
 
-    @GET
+    @POST
     suspend fun fetchStudentDetails(
         @Url url: String,
-        @QueryMap qm: Map<String, String>,
-        @HeaderMap headers: Map<String, String>
+        @HeaderMap headers: Map<String, String>,
+        @Body body: String
     ): Response<String>
 
 }

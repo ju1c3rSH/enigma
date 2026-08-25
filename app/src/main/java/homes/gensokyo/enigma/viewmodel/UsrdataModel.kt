@@ -11,7 +11,7 @@ import homes.gensokyo.enigma.BuildConfig
 import homes.gensokyo.enigma.MainApplication.Companion.context
 import homes.gensokyo.enigma.logic.logic.UserRepository
 import homes.gensokyo.enigma.bean.*
-import homes.gensokyo.enigma.util.CiperTextUtil
+import homes.gensokyo.enigma.util.CipherTextUtil
 import homes.gensokyo.enigma.util.AppConstants
 import homes.gensokyo.enigma.util.DateUtils
 import homes.gensokyo.enigma.util.LogUtils
@@ -73,25 +73,30 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
     }
 
     private fun findStudentIndex(resultKid: List<Student>?): Int {
-        val savedName = get("studentName","默认名字")
+        val savedUuid = get("kidUuid", "")
         resultKid?.forEachIndexed { index, student ->
-            //LogUtils.d("findStudentIndex", "savedName: ${savedName}")
-            if (student.studentName == savedName) {
-                LogUtils.d("findStudentIndex", "savedName: ${savedName} + $index")
+            if (savedUuid.isNotEmpty() && student.uuid == savedUuid) {
+                LogUtils.d("findStudentIndex", "matched by uuid: ${student.studentName} #$index")
                 return index
             }
         }
-
+        val savedName = get("studentName", "默认名字")
+        resultKid?.forEachIndexed { index, student ->
+            if (student.studentName == savedName) {
+                LogUtils.d("findStudentIndex", "matched by name: $savedName + $index")
+                return index
+            }
+        }
         return -1
     }
-    val dashboardUpdateLimit = get("dashboardUpdateLimit", -50)
+    val dashboardUpdateLimit = get("dashboard_update_limit", 50)
     suspend fun refreshData(headers: Map<String, String>) {
         viewModelScope.launch {
             try {
                 _studentData.postValue(
                     DataState.Loading
                 )
-                val cipherText = CiperTextUtil.encrypt(get("wxOaOpenid","000"))
+                val cipherText = CipherTextUtil.generateCipherText(get("wxOaOpenid","000"))
                 val resultGetRole = repository.fetchRole(cipherText, AppConstants.headerMap)
                 resultGetRole?.let {
                     LogUtils.d("UsrMdl", "Received Role info: $it ；$cipherText   11"  +get("wxOaOpenid","000").toString())
@@ -107,11 +112,11 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     .build()
                 LogUtils.d("queryData", "Query info: $qrBuild")
 
-                val resultQuery = repository.queryData(AppConstants.headerMap, qrBuild )!!
+                val resultQuery = repository.queryData(AppConstants.headerMap, qrBuild)
                 resultQuery?.let {
                     LogUtils.d("queryData", "Received Query info: $it")
+                    _queryData.postValue(it)
                 }
-                _queryData.postValue(resultQuery)
                 //LogUtils.d("queryData", "Received Query info: $resultQuery")
 
                 val resultKid = repository.fetchStudents(AppConstants.headerMap)
@@ -166,7 +171,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                         7,
                         1,
                         1000,
-                        DateUtils.Date2Str(dashboardUpdateLimit,false),
+                        DateUtils.Date2Str(-dashboardUpdateLimit, false),
                         DateUtils.Date2Str(1)
                     )
                     repository.fetchMemberFlow(memberFlowAllRequest, AppConstants.headerMap)

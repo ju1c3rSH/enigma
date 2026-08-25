@@ -29,21 +29,29 @@ object SettingUtils {
     @SuppressLint("SdCardPath")
     inline fun <reified T> get(name: String, defaultValue: T): T {
         return when (T::class) {
-            Boolean::class -> sharedPreferences!!.getBoolean(
-                name, defaultValue as? Boolean ?: false
-            ) as T
+            Boolean::class -> try {
+                sharedPreferences!!.getBoolean(
+                    name, defaultValue as? Boolean ?: false
+                ) as T
+            } catch (e: ClassCastException) { defaultValue }
 
-            String::class -> {
+            String::class -> try {
                 val str = sharedPreferences!!.getString(name, defaultValue as? String ?: "") as T
-                if(str==""){
-                    "/sdcard/"
-                }
                 str
-            }
+            } catch (e: ClassCastException) { defaultValue }
 
-            Int::class -> sharedPreferences!!.getInt(name, defaultValue as? Int ?: 0) as T
-            Long::class -> sharedPreferences!!.getLong(name, defaultValue as? Long ?: 0L) as T
-            Float::class -> sharedPreferences!!.getFloat(name, defaultValue as? Float ?: 0F) as T
+            Int::class -> try {
+                sharedPreferences!!.getInt(name, defaultValue as? Int ?: 0) as T
+            } catch (e: ClassCastException) { defaultValue }
+
+            Long::class -> try {
+                sharedPreferences!!.getLong(name, defaultValue as? Long ?: 0L) as T
+            } catch (e: ClassCastException) { defaultValue }
+
+            Float::class -> try {
+                sharedPreferences!!.getFloat(name, defaultValue as? Float ?: 0F) as T
+            } catch (e: ClassCastException) { defaultValue }
+
             else -> throw IllegalArgumentException("This type of class is not supported.")
         }
     }

@@ -9,6 +9,8 @@ import java.util.Locale
 import java.util.regex.Pattern
 
 object TextUtils {
+    fun removeSpaces(s: String): String = s.replace(" ", "")
+
     fun String.isUrl(): Boolean {
         val pattern = "^((https?|ftp|file)://)?([a-z0-9-]+\\.)+[a-z0-9]{2,4}.*$"
         val regex = Regex(pattern, RegexOption.IGNORE_CASE)

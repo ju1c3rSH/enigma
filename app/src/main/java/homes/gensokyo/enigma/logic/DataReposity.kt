@@ -1,4 +1,4 @@
-package homes.gensokyo.enigma.logic.logic
+﻿package homes.gensokyo.enigma.logic.logic
 
 import android.util.Log
 import com.google.gson.Gson
@@ -13,8 +13,10 @@ import homes.gensokyo.enigma.bean.Student
 import homes.gensokyo.enigma.bean.balanceBean
 import homes.gensokyo.enigma.bean.memberflowbean
 import homes.gensokyo.enigma.util.AppConstants
+import homes.gensokyo.enigma.util.CipherTextUtil
 import homes.gensokyo.enigma.util.LogUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
+import homes.gensokyo.enigma.util.TextUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URLEncoder
@@ -41,6 +43,7 @@ class UserRepository {
     suspend fun queryData(headerMap: Map<String, String>, request: QueryRequest):QueryResponse? {
         return try {
             val response = apiService.Query(headerMap, request)
+            LogUtils.d("queryData", "code=${response.code()} body=${response.body()?.take(200)}")
             if (response.isSuccessful) {
                 //LogUtils.d("queryData", response.toString())
                 return gson.fromJson(response.body(), object : TypeToken<QueryResponse>() {}.type)
@@ -59,11 +62,13 @@ class UserRepository {
 
     suspend fun doLogin(headerMap: Map<String, String>): String? {
         return try {
-            val response = apiService.doLogin(AppConstants.loginUrl, headerMap, AppConstants.jsonStr)
+            val body = gson.toJson(mapOf("paramStr" to CipherTextUtil.encryptUpdateNews(AppConstants.jsonStr)))
+            val response = apiService.doLogin(AppConstants.loginUrl, headerMap, body)
+            LogUtils.d("doLogin", "code=${response.code()} body=${response.body()?.take(200)}")
             if (response.isSuccessful) {
                 response.body()
             } else {
-                null // Handle unsuccessful response
+                null
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -105,74 +110,60 @@ class UserRepository {
     }
     suspend fun fetchAllowedSearchSchools(schoolName: String, headerMap: Map<String, String>): List<School>? {
         return try {
-            val response = apiService.fetchAllowedSchoolList(AppConstants.getAllowSearchSchoolUrl + schoolName, headerMap)
+            val paramJson = gson.toJson(mapOf("schoolName" to schoolName))
+            val body = gson.toJson(mapOf("paramStr" to CipherTextUtil.encryptUpdateNews(TextUtils.removeSpaces(paramJson))))
+            val response = apiService.fetchAllowedSchoolList(AppConstants.getAllowSearchSchoolUrl, headerMap, body)
+            LogUtils.d("fetchAllowedSearchSchools", "code=${response.code()} body=${response.body()?.take(300)}")
             if (response.isSuccessful) {
-                LogUtils.d("fetchAllowedSearchSchools", response.body().toString())
+                val decrypted = CipherTextUtil.decryptUpdateNews(response.body() ?: return null)
                 val listType = object : TypeToken<List<School>>() {}.type
-                val schoolList: List<School> = gson.fromJson(response.body(), listType)
-
-                return schoolList
-            }else{
-                null //TODO 解决null，让具象化
+                gson.fromJson<List<School>>(decrypted, listType)
+            } else {
+                null
             }
-        }catch (e:Exception){
-            Log.e("fetchAllowedSearchSchools", "Error fetching balance : ${e.message}")
+        } catch (e: Exception) {
+            Log.e("fetchAllowedSearchSchools", "Error", e)
             null
         }
     }
 
-    suspend fun fetchAllNotGraduateClasses4Tenant(tenantId:Int , headerMap: Map<String, String>): List<GradeBean>? {
+    suspend fun fetchAllNotGraduateClasses4Tenant(tenantId: Int, headerMap: Map<String, String>): List<GradeBean>? {
         return try {
-            val response = apiService.fetchAllNotGraduateClasses4Tenant(
-                AppConstants.getAllNotGraduateClasses4TenantUrl + tenantId,
-                headerMap
-            )
+            val paramJson = gson.toJson(mapOf("tenantId" to tenantId))
+            val body = gson.toJson(mapOf("paramStr" to CipherTextUtil.encryptUpdateNews(TextUtils.removeSpaces(paramJson))))
+            val response = apiService.fetchAllNotGraduateClasses4Tenant(AppConstants.getAllNotGraduateClasses4TenantUrl, headerMap, body)
+            LogUtils.d("fetchAllClasses", "code=${response.code()} body=${response.body()?.take(300)}")
             if (response.isSuccessful) {
-                LogUtils.d("fetchAllNotGraduateClasses4Tenant", response.body().toString())
+                val decrypted = CipherTextUtil.decryptUpdateNews(response.body() ?: return null)
                 val listType = object : TypeToken<List<GradeBean>>() {}.type
-                val gradeList: List<GradeBean> = gson.fromJson(response.body(), listType)
-                return gradeList
-            }else{
+                gson.fromJson<List<GradeBean>>(decrypted, listType)
+            } else {
                 null
             }
-        }catch (e:Exception){
-            Log.e("fetchAllNotGraduateClasses4Tenant", "Error fetching balance : ${e.message}")
+        } catch (e: Exception) {
+            Log.e("fetchAllNotGraduateClasses4Tenant", "Error: ${e.message}")
             null
-
         }
     }
 
-    suspend fun fetchStudentDetails(studentNane:String,classId:Int, headerMap: Map<String, String>): Student? {
-        val map = mapOf(
-            "studentName" to studentNane.toString(),
-            "classId" to classId.toString())
+    suspend fun fetchStudentDetails(studentNane: String, classId: Int, headerMap: Map<String, String>): Student? {
         return try {
-            val response = apiService.fetchStudentDetails(AppConstants.getListByStudentNameUrl,map, headerMap)
+            val paramJson = gson.toJson(mapOf("classId" to listOf(classId), "studentName" to studentNane))
+            val body = gson.toJson(mapOf("paramStr" to CipherTextUtil.encryptUpdateNews(TextUtils.removeSpaces(paramJson))))
+            val response = apiService.fetchStudentDetails(AppConstants.getListByStudentNameUrl, headerMap, body)
+            LogUtils.d("fetchStudentDetails", "code=${response.code()} body=${response.body()?.take(300)}")
             if (response.isSuccessful) {
-                if (response.body()!!.isEmpty()){
-                    return null
-                }
-                //LogUtils.d("DETAILS", response.body().toString())
-                val listType = object : TypeToken<List<Student>>() {}.type
-                val sul: List<Student> = gson.fromJson(response.body(), listType)
-
-                LogUtils.d("DETAILS", sul[0].studentName)
-                return sul[0]
-
-                //val listType = object : TypeToken<List<Student>>() {}.type
-                //val detailIst:Student = gson.fromJson(response.body(), listType)
-                //return detailIst
-
-            }else{
-                Log.e("fetchStudentDetails", "Error fetching ")
+                val decrypted = CipherTextUtil.decryptUpdateNews(response.body() ?: return null)
+                val list = gson.fromJson<List<Student>>(decrypted, object : TypeToken<List<Student>>() {}.type)
+                list.firstOrNull()
+            } else {
                 null
             }
-        }catch (e:Exception){
-            Log.e("fetchStudentDetails", "Error fetching balance : ${e.message}")
+        } catch (e: Exception) {
+            Log.e("fetchStudentDetails", "Error: ${e.message}")
             null
         }
     }
-
 
     suspend fun fetchMemberFlow(json: MemberFlowJsonBuilder, headerMap: Map<String, String>): memberflowbean? {
         return try {
@@ -200,3 +191,4 @@ class UserRepository {
 
 
 }
+

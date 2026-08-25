@@ -1,4 +1,4 @@
-package homes.gensokyo.enigma.service
+﻿package homes.gensokyo.enigma.service
 
 import android.app.Application
 import android.app.Service
@@ -12,7 +12,7 @@ import homes.gensokyo.enigma.MainActivity.Companion.repository
 import homes.gensokyo.enigma.MainApplication
 import homes.gensokyo.enigma.bean.MemberFlowJsonBuilder
 import homes.gensokyo.enigma.`interface`.ApiService
-import homes.gensokyo.enigma.util.CiperTextUtil
+import homes.gensokyo.enigma.util.CipherTextUtil
 import homes.gensokyo.enigma.util.NetworkUtils
 import homes.gensokyo.enigma.util.AppConstants
 import homes.gensokyo.enigma.util.DateUtils
@@ -68,7 +68,7 @@ class ZhiWeiDataGetterService : Service() {
                     LogUtils.d("DataService", "isFirst:$isFirstRun")
                     serviceScope.launch {
                     try {
-                        val cipherText = CiperTextUtil.encrypt(get("wxOaOpenid","sss"))//这些默认值也许可以更好
+                        val cipherText = CipherTextUtil.generateCipherText(get("wxOaOpenid","sss"))//这些默认值也许可以更好
                         val resultGetRole = repository.fetchRole(cipherText, AppConstants.headerMap)
                         resultGetRole?.let {
                             LogUtils.d("DataService", "Received GetRole info: $it")

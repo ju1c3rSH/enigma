@@ -5,21 +5,24 @@ object  AppConstants {
     const val getBalance = "https://wx.ivxiaoyuan.com/sc/consume/h5/query/getMemberBalance?objectUuid="
     const val getAllStudentsOfParentUrl = "https://wx.ivxiaoyuan.com/sc/basic/h5/studentQuery/getAllStudentsOfParent?queryWay=5"
     const val getMemberFlow = "https://wx.ivxiaoyuan.com/sc/consume/h5/query/getMemberFlow"
-    const val loginUrl = "https://wx.ivxiaoyuan.com/sc/h5/officialAccountLoginManage/login?appid=wxddbbb3d7ad98c9a4&role=parent"
-    const val getAllowSearchSchoolUrl = "https://wx.ivxiaoyuan.com/sc/om/basic/h5/schoolQuery/getAllowSearchSchool?schoolName="//schoolName=&t=1726471689712
+    const val loginUrl = "https://wx.ivxiaoyuan.com/sc/h5/officialAccountLoginManage/login"
+    const val getAllowSearchSchoolUrl = "https://wx.ivxiaoyuan.com/sc/om/basic/h5/schoolQuery/getAllowSearchSchool?paramStr="
     const val capturePhoto = "https://wx.ivxiaoyuan.com/sc/files/capturePhoto/"
+    const val personPhotoBase = "https://wx.ivxiaoyuan.com/sc/files/personPhoto/"
     const val queryUrl = "https://wx.ivxiaoyuan.com/sc/student/h5/dynamicParentViewQuery/query"
     const val copyPersonCode = "cfb0961b2c844923902ed6544a878467"
-    const val getListByStudentNameUrl = "https://wx.ivxiaoyuan.com/sc/basic/h5/studentQuery/getListByStudentNameInClass"
-    const val getAllNotGraduateClasses4TenantUrl = "https://wx.ivxiaoyuan.com/sc/basic/h5/classesManage/getAllNotGraduateClasses4Tenant?tenantId="//https://wx.ivxiaoyuan.com/sc/basic/h5/classesManage/getAllNotGraduateClasses4Tenant?tenantId=
+    const val getListByStudentNameUrl = "https://wx.ivxiaoyuan.com/sc/collect/h5/infoManage/getListByStudentNameInClass"
+    const val getAllNotGraduateClasses4TenantUrl = "https://wx.ivxiaoyuan.com/sc/collect/h5/infoManage/getAllNotGraduateClasses4Tenant"
     //{"objectUuid":"","types":[2,5,6,7],"objectType":7,"page":1,"rows":15,"startTime":"2023-06-24 00:00:00","endTime":"2023-09-24 23:59:59"}
     //String memberFlowJson = "{\"objectUuid\":\"\",\"types\":[2,5,6,7],\"objectType\":7,\"page\":1,\"rows\":15,\"startTime\":\"2023-06-24 00:00:00\",\"endTime\":\"2023-09-24 23:59:59\"}";
 
-    val jsonStr = "{\"appid\": \"wxddbbb3d7ad98c9a4\", \"role\": \"parent\"}"
+    const val jsonStr = "{\"appid\":\"wxddbbb3d7ad98c9a4\",\"role\":\"parent\"}"
     val headerMap = mapOf(
-            "User-Agent" to
-            "FuckYou/5.0 (Linux; Android 5.0; SM-N9100 Build/LRX21V) > AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 > Chrome/37.0.0.0 Mobile Safari/537.36 > MicroMessenger/6.0.2.56_r958800.520 NetType/WIFI"
-        )
+        "Accept" to "application/json, text/plain, */*",
+        "Content-Type" to "application/json; charset=UTF-8",
+        "User-Agent" to
+        "Mozilla/5.0 (Linux; Android 13; M2102K1G Build/TKQ1.220829.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.6723.103 Mobile Safari/537.36 XWEB/1300333 MMWEBSDK/20241103 MMWEBID/5267 MicroMessenger/8.0.54.2741(0x28003641) WeChat/arm64 Weixin GPVersion/1 NetType/WIFI Language/zh_CN ABI/arm64"
+    )
 // TODO: url改成路由 
 
 }
