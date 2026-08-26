@@ -1,4 +1,4 @@
-package homes.gensokyo.enigma.viewmodel
+﻿package homes.gensokyo.enigma.viewmodel
 
 import android.content.Intent
 import android.util.Log
@@ -18,10 +18,13 @@ import homes.gensokyo.enigma.util.LogUtils
 import homes.gensokyo.enigma.util.SettingUtils.get
 import homes.gensokyo.enigma.util.SettingUtils.sharedPreferences
 import homes.gensokyo.enigma.util.TextUtils.toast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicBoolean
 
 class UsrdataModelFactory(private val repository: UserRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -47,7 +50,8 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
     private val _queryData = MutableLiveData<QueryResponse>()
     val queryData: LiveData<QueryResponse> = _queryData
 
-
+    //必须在 init 之前初始化（Kotlin 按声明顺序执行初始化）
+    private val refreshing = AtomicBoolean(false)
 
     init {
         startPeriodicRefresh(headers = AppConstants.headerMap)
@@ -55,16 +59,13 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
 
     //定时刷新任务
     private fun startPeriodicRefresh(headers: Map<String, String>) {
-        val intervalMillis: Long? = get("updateRate","60000").toLongOrNull()
-        //TODO 这里实际上不是和Setting里面统一的
+        val intervalMillis: Long? = get("updateRate","60000").toLongOrNull()?.coerceAtLeast(15000L)
         viewModelScope.launch {
             flow {
                 while (true) {
                     emit(Unit)
                     LogUtils.d("startPeriodicRefresh", intervalMillis.toString())
-                    if (intervalMillis != null) {
-                        delay(intervalMillis)
-                    }
+                    delay(intervalMillis ?: 60000L)
                 }
             }.collect {
                 refreshData(headers)
@@ -91,20 +92,22 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
     }
     val dashboardUpdateLimit = get("dashboard_update_limit", 50)
     suspend fun refreshData(headers: Map<String, String>) {
-        viewModelScope.launch {
+        //防重入：上一轮未结束时跳过，避免请求堆积
+        if (!refreshing.compareAndSet(false, true)) return
+        //已有数据时不回退到 Loading，避免整页骨架屏闪烁
+        if (_studentData.value !is DataState.Success) {
+            _studentData.postValue(DataState.Loading)
+        }
+        viewModelScope.launch(Dispatchers.Default) {
             try {
-                _studentData.postValue(
-                    DataState.Loading
-                )
                 val cipherText = CipherTextUtil.generateCipherText(get("wxOaOpenid","000"))
                 val resultGetRole = repository.fetchRole(cipherText, AppConstants.headerMap)
-                resultGetRole?.let {
-                    LogUtils.d("UsrMdl", "Received Role info: $it ；$cipherText   11"  +get("wxOaOpenid","000").toString())
+                if (resultGetRole != null) {
+                    LogUtils.d("UsrMdl", "Received Role info ok；$cipherText")
                 }
 
-                val resultLogin = repository.doLogin(AppConstants.headerMap)
-                resultLogin?.let {
-                }
+                repository.doLogin(AppConstants.headerMap)
+
                 val qrBuild = QueryRequest.Builder().setPage(1)
                     .setRows(30)
                     .setCopyPersonCode(get("kidUuid","111"))
@@ -113,43 +116,18 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                 LogUtils.d("queryData", "Query info: $qrBuild")
 
                 val resultQuery = repository.queryData(AppConstants.headerMap, qrBuild)
-                resultQuery?.let {
-                    LogUtils.d("queryData", "Received Query info: $it")
-                    _queryData.postValue(it)
+                if (resultQuery != null) {
+                    LogUtils.d("queryData", "Received Query info, ${resultQuery.datas?.size ?: 0} items")
+                    _queryData.postValue(resultQuery)
                 }
-                //LogUtils.d("queryData", "Received Query info: $resultQuery")
 
                 val resultKid = repository.fetchStudents(AppConstants.headerMap)
-
-                resultKid?.joinToString(separator = "\n", prefix = "Students:\n") { student ->
-                    "Name: ${student.studentName}, ID: ${student.studentId}, CN: ${student.cardNumber}"
-                }?.let { LogUtils.d("StudentList", it) }
+                LogUtils.d("StudentList", "fetched ${resultKid?.size ?: 0} students")
                 //这里智威后台发癫，会返回所有同一parent的kid，并且kid顺序有变化
 
                 LogUtils.d("UsrDataMdl", "$dashboardUpdateLimit")
                 /*
-                val resultBalance = repository.fetchBalance(AppConstants.headerMap)
-                if (resultBalance != null) {
-                    LogUtils.d("UsrMdl", "Received Balance info: $resultBalance")
-
-                } else {
-                    Log.e("UsrMdl", "Failed to fetch balance") // 记录错误信息
-                    _studentData.postValue(DataState.Error("Failed to fetch balance")) // 更新 UI 状态
-
-                }
-
-                LogUtils.d("startDat",  DateUtils.Date2Str(-10,true) )
-                val memberFlowRequest = MemberFlowJsonBuilder(
-                    get("kidUuid","1111"),
-                    listOf(2, 5, 6, 7),
-                    7,
-                    1,
-                    100,
-                    DateUtils.Date2Str(-10,true),
-                    DateUtils.Date2Str(1)
-                )
-                val resultMemberFlow = repository.fetchMemberFlow(memberFlowRequest, AppConstants.headerMap)
-                弃用代码
+                弃用代码：旧版串行拉取，已被下方并发版取代
                  */
                 val resultBalanceDeferred = async { repository.fetchBalance(AppConstants.headerMap) }
                 val resultMemberFlowDeferred = async {
@@ -177,80 +155,73 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     repository.fetchMemberFlow(memberFlowAllRequest, AppConstants.headerMap)
                 }
 
-                fun restartApp() {
-
-                    val packageManager = context.packageManager
-                    val intent = packageManager.getLaunchIntentForPackage(context.packageName)
-                    val componentName = intent?.component
-                    val mainIntent = Intent.makeRestartActivityTask(componentName)
-                    context.startActivity(mainIntent)
-                    Runtime.getRuntime().exit(0)
-                }
                 val resultBalance = resultBalanceDeferred.await()!!
                 val resultMemberFlowAll = resultMemberFlowAllDeferred.await()
                 val resultMemberFlow = resultMemberFlowDeferred.await()
-                if(!BuildConfig.DEBUG){
-                    if(get("unilateralDeclarationCardNumber","fake") != resultBalance.cardNumber) {
-                        //LogUtils.d("UsrDataModel", get("unilateralDeclarationCardNumber","fake") + " != " + resultBalance.cardNumber)
-                        val editor = sharedPreferences!!.edit()
-                        editor.clear()
-                        editor.apply()
+                if (!BuildConfig.DEBUG &&
+                    get("unilateralDeclarationCardNumber","fake") != resultBalance.cardNumber
+                ) {
+                    val editor = sharedPreferences!!.edit()
+                    editor.clear()
+                    editor.commit()
+                    withContext(Dispatchers.Main) {
                         "卡号不正确，强制退出！".toast()
-                        editor.clear()
-                        editor.commit()
-                        /*
-                        if (sharedPreferences.all.isEmpty()) {
-                            LogUtils.d("Preferences", "清除成功")
-                        } else {
-                            LogUtils.d("Preferences", "清除失败")
-                        }
-                         */
-                        restartApp() }
+                        forceRestartApp()
+                    }
+                    return@launch
                 }
 
-
-
-                LogUtils.d("UsrDataModel", "Received MemberFlow info: $resultMemberFlow")
-                if (resultBalance != null && resultKid != null) {
-                    val studentIndex = findStudentIndex(resultKid)
+                if (resultBalance == null || resultKid == null) {
+                    _studentData.postValue(DataState.Error("err"))
+                    LogUtils.d("refreshData", "resultBalance is null")
+                    return@launch
+                }
+                val studentIndex = findStudentIndex(resultKid)
+                if (studentIndex < 0) {
+                    _studentData.postValue(DataState.Error("err"))
+                    return@launch
+                }
+                if (resultMemberFlow != null) {
                     val studentName = resultKid[studentIndex].studentName ?: "默认姓名"
                     val className = resultKid[studentIndex].classes.className ?: ""
                     val studentNamePinyin = resultKid[studentIndex].studentNamePinyin ?: ""
                     val headSculpture = resultKid[studentIndex].headSculpture ?: ""
-
-                    if (resultMemberFlow != null) {
-                        LogUtils.d("refreshData", resultMemberFlow.toString())
-                        _memberFlow.postValue(resultMemberFlow)
-                        _memberFlowAll.postValue(resultMemberFlowAll)
-                        _studentData.postValue(
-                            DataState.Success(
-                                UserDataBean(
-                                    balance = resultBalance.balance.toString(),
-                                    studentName = studentName,
-                                    cardNumber = resultBalance.cardNumber,
-                                    consumptionCount = resultMemberFlow.total.toString(),
-                                    studentNamePinyin = studentNamePinyin,
-                                    headSculpture = headSculpture,
-                                    className = className,
-                                )
-
+                    //排序前置到后台线程，UI 不再每次重组重排
+                    val sortedFlow = resultMemberFlow.copy(datas = resultMemberFlow.datas?.sortedByDescending { it.consumeTime })
+                    val sortedFlowAll = resultMemberFlowAll?.copy(datas = resultMemberFlowAll.datas?.sortedByDescending { it.consumeTime })
+                    _memberFlow.postValue(sortedFlow)
+                    _memberFlowAll.postValue(sortedFlowAll)
+                    _studentData.postValue(
+                        DataState.Success(
+                            UserDataBean(
+                                balance = resultBalance.balance.toString(),
+                                studentName = studentName,
+                                cardNumber = resultBalance.cardNumber,
+                                consumptionCount = resultMemberFlow.total.toString(),
+                                studentNamePinyin = studentNamePinyin,
+                                headSculpture = headSculpture,
+                                className = className,
                             )
                         )
-                    }
-
-                } else {
-                    _studentData.postValue(
-                        DataState.Error("err")
                     )
-                    LogUtils.d("refreshData", "resultBalance is null")
-
-
                 }
-            }catch (e: Exception) {
-            _studentData.postValue(e.message?.let { DataState.Error(it) })
+            } catch (e: Exception) {
+                _studentData.postValue(e.message?.let { DataState.Error(it) })
+            } finally {
+                refreshing.set(false)
+            }
         }
-     }
     }
+
+    private fun forceRestartApp() {
+        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+        val componentName = intent?.component
+        context.startActivity(Intent.makeRestartActivityTask(componentName))
+        Runtime.getRuntime().exit(0)
+    }
+
+    private fun studentIndexValid(resultKid: List<Student>?): Boolean =
+        findStudentIndex(resultKid) >= 0
 }
 sealed class DataState<out T> {
     // 数据请求成功状态

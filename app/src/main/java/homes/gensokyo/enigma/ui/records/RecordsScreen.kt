@@ -57,7 +57,8 @@ fun RecordsScreen(
 
     val flow by memberFlowAll.observeAsState()
     val queries by queryData.observeAsState()
-    val records = flow?.datas.orEmpty().sortedByDescending { it.consumeTime }
+    //ViewModel 已按 consumeTime 降序投递
+    val records = flow?.datas.orEmpty()
 
     Column(modifier.fillMaxSize()) {
         ScreenHeader(
@@ -151,7 +152,7 @@ private fun FlowList(
 
 @Composable
 private fun FaceList(query: QueryResponse?) {
-    val datas = query?.datas.orEmpty().sortedByDescending { it.publishTime }
+    val datas = remember(query) { query?.datas.orEmpty().sortedByDescending { it.publishTime } }
     if (datas.isEmpty()) {
         EmptyHint(stringResource(R.string.empty_records), Modifier.padding(top = 32.dp))
     } else {

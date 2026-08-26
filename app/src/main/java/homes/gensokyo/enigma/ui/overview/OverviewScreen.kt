@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +44,9 @@ fun OverviewScreen(
 ) {
     val state by studentData.observeAsState()
     val flow by memberFlow.observeAsState()
-    val records = flow?.datas.orEmpty().sortedByDescending { it.consumeTime }
+    //ViewModel 已按 consumeTime 降序投递；今日消费额只在数据变化时重算
+    val records = remember(flow) { flow?.datas.orEmpty() }
+    val todayTotal = remember(records) { records.sumOf { it.amount ?: 0.0 } }
     val loading = state !is DataState.Success
 
     LazyColumn(
@@ -90,7 +93,7 @@ fun OverviewScreen(
             ) {
                 StatCard(
                     label = stringResource(R.string.today_consume),
-                    value = "¥%.2f".format(records.sumOf { it.amount ?: 0.0 }),
+                    value = "¥%.2f".format(todayTotal),
                     loading = loading,
                     modifier = Modifier.weight(1f)
                 )
