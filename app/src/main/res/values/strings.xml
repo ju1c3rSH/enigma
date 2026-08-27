@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">EN!GMA</string>
+    <string name="navigation_home">主页</string>
+    <string name="navigation_dashboard">流水</string>
     <string name="navigation_title_home">智威校园EX·主页</string>
     <string name="navigation_title_dashboard">智威校园EX·仪表板</string>
     <string name="navigation_title_notifications">智威校园EX·通知</string>

@@ -24,6 +24,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionNameSuffix = "@舒芙蕾"
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
     }
 
     signingConfigs {
@@ -71,9 +74,6 @@ android {
     }
     buildFeatures {
         buildConfig = true
-
-        dataBinding = true
-        viewBinding = true
     }
 }
     compileOptions {
@@ -81,7 +81,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
-        viewBinding = true
         compose = true
     }
     composeOptions {
@@ -90,14 +89,8 @@ android {
     ndkVersion = "25.1.8937393"
 
     dependencies {
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
-
-    implementation("androidx.databinding:databinding-runtime:7.3.2")
     implementation( "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
     implementation("androidx.room:room-runtime:2.4.0")
-    implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.preference)
     annotationProcessor("androidx.room:room-compiler:2.4.0")
     // optional - Kotlin Extensions and Coroutines support for Room
@@ -107,13 +100,9 @@ android {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

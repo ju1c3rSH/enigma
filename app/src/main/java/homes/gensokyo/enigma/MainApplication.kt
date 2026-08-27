@@ -3,7 +3,6 @@ package homes.gensokyo.enigma
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import com.google.android.material.color.DynamicColors
 import com.google.gson.Gson
 import homes.gensokyo.enigma.`interface`.ApiService
 import homes.gensokyo.enigma.`interface`.GithubApiService
@@ -29,7 +28,6 @@ class MainApplication : Application() {
     }
     override fun onCreate() {
         super.onCreate()
-        DynamicColors.applyToActivitiesIfAvailable(this)
         context = this
         gson = Gson()
         instance = this
