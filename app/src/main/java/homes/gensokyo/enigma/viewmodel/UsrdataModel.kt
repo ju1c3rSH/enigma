@@ -116,9 +116,9 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                 LogUtils.d("queryData", "Query info: $qrBuild")
 
                 val resultQuery = repository.queryData(AppConstants.headerMap, qrBuild)
-                if (resultQuery != null) {
-                    LogUtils.d("queryData", "Received Query info, ${resultQuery.datas?.size ?: 0} items")
-                    _queryData.postValue(resultQuery)
+                resultQuery?.let { query ->
+                    LogUtils.d("queryData", "Received Query info, ${query.datas?.size ?: 0} items")
+                    _queryData.postValue(query)
                 }
 
                 val resultKid = repository.fetchStudents(AppConstants.headerMap)

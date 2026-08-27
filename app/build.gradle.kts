@@ -1,3 +1,4 @@
+import java.io.File
 import org.jetbrains.kotlin.fir.declarations.builder.buildScript
 
 
@@ -18,11 +19,11 @@ android {
         applicationId = "homes.gensokyo.enigma"
         minSdk = 24
         targetSdk = 34
-        versionCode = 40
-        versionName = "2.2.0"
+        versionCode = 41
+        versionName = "2.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionNameSuffix = "@布丁"
+        versionNameSuffix = "@舒芙蕾"
     }
 
     buildTypes {
@@ -35,6 +36,12 @@ android {
             buildConfigField("boolean", "IS_DEBUG", "false")
 
             isMinifyEnabled = false
+
+            val ksFile = System.getenv("KEYSTORE_FILE_PATH")?.let { File(it) }
+            if (ksFile != null && ksFile.exists() && ksFile.length() > 0) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -68,6 +75,18 @@ android {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
     ndkVersion = "25.1.8937393"
+
+    signingConfigs {
+        create("release") {
+            val ksFile = System.getenv("KEYSTORE_FILE_PATH")?.let { File(it) }
+            if (ksFile != null && ksFile.exists() && ksFile.length() > 0) {
+                storeFile = ksFile
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD")
+            }
+        }
+    }
 
     dependencies {
     implementation ("com.github.bumptech.glide:glide:4.12.0")

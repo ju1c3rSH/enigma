@@ -4,51 +4,58 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'v*'
 
 jobs:
   build:
-    name: Build, Test, and Sign APK
+    name: Build, Test and Release
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v4
       with:
-        distribution: 'adopt'
+        distribution: 'temurin'
         java-version: '17'
+        cache: gradle
 
     - name: Decode keystore
+      if: ${{ secrets.KEYSTORE_FILE != '' }}
       run: |
-        echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > release.keystore
+        echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > "${{ github.workspace }}/release.keystore"
 
     - name: Build and test
       run: |
         chmod +x gradlew
-        ./gradlew assembleRelease
-        ./gradlew test
+        ./gradlew assembleRelease test
       env:
         KEYSTORE_FILE_PATH: ${{ github.workspace }}/release.keystore
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-    - name: Sign app APK
-      uses: r0adkll/sign-android-release@v1
-      id: sign_app
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
       with:
-        releaseDirectory: app/build/outputs/apk/release
-        signingKeyBase64: ${{ secrets.SIGNING_KEY }}  # Base64 编码的密钥
-        alias: ${{ secrets.ALIAS }}
-        keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-        keyPassword: ${{ secrets.KEY_PASSWORD }}
-      env:
-        BUILD_TOOLS_VERSION: "34.0.0"  # 可选，覆盖默认构建工具版本
+        name: enigma-release-apk
+        path: app/build/outputs/apk/release/*.apk
 
-    - name: Upload signed APK
-      uses: actions/upload-artifact@v3
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v2
       with:
-        name: Signed app bundle
-        path: ${{ steps.sign_app.outputs.signedReleaseFile }}  # 使用签名后的 APK 路径
+        files: app/build/outputs/apk/release/*.apk
+        generate_release_notes: true
+        body: |
+          ## EN!GMA 2.3.0 @舒芙蕾
+
+          - 主界面/设置/关于/OOBE 全面迁移 Jetpack Compose
+          - 启动图标更换为扁平"破盘"设计
+          - 消费流水按天分组（sticky 日期头 + 当日合计），条目徽章化重设计
+          - 接口层对齐服务端新版加密契约
+          - 定时刷新移出主线程，消除骨架屏闪烁
+        fail_on_unmatched_files: true
