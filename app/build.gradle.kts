@@ -47,7 +47,8 @@ android {
 
             buildConfigField("boolean", "IS_DEBUG", "false")
 
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
 
             val ksFile = System.getenv("KEYSTORE_FILE_PATH")?.let { File(it) }
             if (ksFile != null && ksFile.exists() && ksFile.length() > 0) {

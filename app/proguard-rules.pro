@@ -5,17 +5,26 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# 保留行号信息，崩溃栈可读
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# 应用自身代码全部保留：避免 R8 误删被反射/Gson/Retrofit 用到的类
+-keep class homes.gensokyo.enigma.** { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Gson 序列化数据类：字段名即 JSON key，混淆会破坏映射
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class homes.gensokyo.enigma.bean.** { *; }
+-keep class homes.gensokyo.enigma.logic.database.model.** { *; }
+
+# Retrofit 接口方法依赖注解与返回类型做动态代理
+-keep,allowobfuscation,allowshrinking interface homes.gensokyo.enigma.interface.** { *; }
+-keep class kotlin.coroutines.Continuation
+-keep class retrofit2.** { *; }
+-keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
+
+# OkHttp/Coil 基础保活
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn coil.**
