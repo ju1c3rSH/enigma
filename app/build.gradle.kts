@@ -26,6 +26,18 @@ android {
         versionNameSuffix = "@舒芙蕾"
     }
 
+    signingConfigs {
+        create("release") {
+            val ksFile = System.getenv("KEYSTORE_FILE_PATH")?.let { File(it) }
+            if (ksFile != null && ksFile.exists() && ksFile.length() > 0) {
+                storeFile = ksFile
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         getByName("debug") {
             buildConfigField("boolean", "IS_DEBUG", "true")
@@ -75,18 +87,6 @@ android {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
     ndkVersion = "25.1.8937393"
-
-    signingConfigs {
-        create("release") {
-            val ksFile = System.getenv("KEYSTORE_FILE_PATH")?.let { File(it) }
-            if (ksFile != null && ksFile.exists() && ksFile.length() > 0) {
-                storeFile = ksFile
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("KEY_ALIAS")
-                keyPassword = System.getenv("KEY_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD")
-            }
-        }
-    }
 
     dependencies {
     implementation ("com.github.bumptech.glide:glide:4.12.0")
