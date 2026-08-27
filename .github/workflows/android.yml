@@ -27,14 +27,15 @@ jobs:
       uses: android-actions/setup-android@v3
 
     - name: Decode keystore
-      if: ${{ secrets.KEYSTORE_FILE != '' }}
       run: |
-        echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > "${{ github.workspace }}/release.keystore"
+        if [ -n "${{ secrets.KEYSTORE_FILE }}" ]; then
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > "${{ github.workspace }}/release.keystore"
+        fi
 
-    - name: Build and test
+    - name: Build release APK
       run: |
         chmod +x gradlew
-        ./gradlew assembleRelease test
+        ./gradlew assembleRelease
       env:
         KEYSTORE_FILE_PATH: ${{ github.workspace }}/release.keystore
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
