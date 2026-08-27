@@ -103,19 +103,6 @@ app/src/main/java/homes/gensokyo/enigma/
 
 ---
 
-## 技术栈
-
-- **语言**：Kotlin 1.9
-- **构建**：AGP 8.4 / Gradle 8.6，单模块 `:app`
-- **UI**：Jetpack Compose（Material 3），底部导航 + `HorizontalPager` 手势切换
-- **网络**：Retrofit + OkHttp（自定义 CookieJar，明文流量经 `network_security_config` 放行）
-- **序列化**：Gson
-- **本地存储**：Room（数据库）、`SharedPreferences`（设置）
-- **图片**：Coil
-- **发布**：Release 开启 R8 混淆与资源压缩
-
----
-
 ## 许可证与免责声明
 
 本软件仅供个人学习交流使用，方便 Android 端查看校园一卡通的日常使用情况。
