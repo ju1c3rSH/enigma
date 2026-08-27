@@ -8,9 +8,13 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import homes.gensokyo.enigma.R
+
+//品牌点缀金（与启动图标的金点同源），仅作小面积强调，不进 colorScheme
+val AccentGold = Color(0xFFFFD66B)
 
 private val LightColors
     @Composable get() = lightColorScheme(

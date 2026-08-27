@@ -32,6 +32,7 @@ import homes.gensokyo.enigma.ui.compose.component.SectionTitle
 import homes.gensokyo.enigma.ui.compose.component.StatCard
 import homes.gensokyo.enigma.ui.compose.component.TicketCard
 import homes.gensokyo.enigma.ui.compose.component.LoadingPlaceholder
+import homes.gensokyo.enigma.ui.compose.component.compactDateTime
 import homes.gensokyo.enigma.viewmodel.DataState
 import androidx.compose.runtime.livedata.observeAsState
 
@@ -127,7 +128,7 @@ fun OverviewScreen(
                 ConsumeRow(
                     deviceName = r.deviceName,
                     placeName = r.placeName,
-                    consumeTime = r.consumeTime,
+                    timeText = compactDateTime(r.consumeTime),
                     amount = r.amount,
                     balanceAfter = r.balance,
                     onClick = onViewAll
