@@ -24,6 +24,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionNameSuffix = "@舒芙蕾"
+        resourceConfigurations += listOf("zh-rCN", "zh")
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi-v7a")
         }
