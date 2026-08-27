@@ -1,5 +1,8 @@
 name: Android CI/CD
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
