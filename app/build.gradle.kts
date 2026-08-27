@@ -19,11 +19,11 @@ android {
         applicationId = "homes.gensokyo.enigma"
         minSdk = 24
         targetSdk = 34
-        versionCode = 41
-        versionName = "2.3.0"
+        versionCode = 42
+        versionName = "2.4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionNameSuffix = "@舒芙蕾"
+        versionNameSuffix = "@可丽饼"
         resourceConfigurations += listOf("zh-rCN", "zh")
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi-v7a")
