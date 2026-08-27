@@ -92,7 +92,6 @@ android {
     dependencies {
     implementation( "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
     implementation("androidx.room:room-runtime:2.4.0")
-    implementation(libs.androidx.preference)
     annotationProcessor("androidx.room:room-compiler:2.4.0")
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.4.0")
