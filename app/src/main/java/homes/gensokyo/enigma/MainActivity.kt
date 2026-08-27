@@ -9,7 +9,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -22,16 +25,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import homes.gensokyo.enigma.BuildConfig
 import homes.gensokyo.enigma.MainApplication
 import homes.gensokyo.enigma.`interface`.GithubApiService
@@ -48,6 +46,7 @@ import homes.gensokyo.enigma.util.TextUtils.toast
 import homes.gensokyo.enigma.viewmodel.UsrdataModel
 import homes.gensokyo.enigma.viewmodel.UsrdataModelFactory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
@@ -87,53 +86,47 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AppRoot(vm: UsrdataModel) {
-    val navController = rememberNavController()
+    val pagerState = rememberPagerState(initialPage = 0) { 2 }
+    val scope = rememberCoroutineScope()
 
     if (!NetworkUtils().isNetworkAvailable(MainApplication.context)) {
         "No internet connection available".toast()
     }
 
+    val pages = listOf(
+        R.string.navigation_home to R.drawable.ic_home_black_24dp,
+        R.string.navigation_dashboard to R.drawable.ic_dashboard_black_24dp
+    )
+
     Scaffold(
         bottomBar = {
             NavigationBar {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-                val items = listOf(
-                    Triple("home", R.string.navigation_home, R.drawable.ic_home_black_24dp),
-                    Triple("records", R.string.navigation_dashboard, R.drawable.ic_dashboard_black_24dp)
-                )
-                items.forEach { (route, labelRes, iconRes) ->
+                pages.forEachIndexed { index, (labelRes, iconRes) ->
                     NavigationBarItem(
                         icon = { Icon(painterResource(iconRes), contentDescription = null) },
                         label = { Text(stringResource(labelRes)) },
-                        selected = currentDestination?.hierarchy?.any { it.route == route } == true,
-                        onClick = {
-                            navController.navigate(route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
+                        selected = pagerState.currentPage == index,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(index) } }
                     )
                 }
             }
         }
     ) { innerPadding ->
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
-            NavHost(navController, startDestination = "home") {
-                composable("home") {
-                    OverviewScreen(
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize()
+            ) { page ->
+                when (page) {
+                    0 -> OverviewScreen(
                         studentData = vm.studentData,
                         memberFlow = vm.memberFlow,
-                        onViewAll = { navController.navigate("records") }
+                        onViewAll = { scope.launch { pagerState.animateScrollToPage(1) } }
                     )
-                }
-                composable("records") {
-                    RecordsScreen(
+                    1 -> RecordsScreen(
                         studentData = vm.studentData,
                         memberFlowAll = vm.memberFlowAll,
                         queryData = vm.queryData
