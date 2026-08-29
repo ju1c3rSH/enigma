@@ -58,11 +58,9 @@ jobs:
         files: app/build/outputs/apk/release/*.apk
         generate_release_notes: true
         body: |
-          ## EN!GMA 2.3.0 @舒芙蕾
+          ## EN!GMA 2.4.2 @可丽饼
 
-          - 主界面/设置/关于/OOBE 全面迁移 Jetpack Compose
-          - 启动图标更换为扁平"破盘"设计
-          - 消费流水按天分组（sticky 日期头 + 当日合计），条目徽章化重设计
-          - 接口层对齐服务端新版加密契约
-          - 定时刷新移出主线程，消除骨架屏闪烁
+          - 修复 OOBE 后无法加载用户信息（SettingUtils 改持 Application context、提交改为 commit 原子化、去除 balance !! 空指针）
+          - 修复 OOBE 搜索学校无结果（getAllowSearchSchoolUrl 去除多余 ?paramStr=、encrypt 改 NO_WRAP、增加链路日志）
+          - 2.4.1/2.4.2 为同 @可丽饼 产线的修复版本
         fail_on_unmatched_files: true
