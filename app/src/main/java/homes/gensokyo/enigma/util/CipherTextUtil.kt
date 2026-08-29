@@ -25,12 +25,12 @@ object CipherTextUtil {
     fun encryptUpdateNews(text: String): String {
         val cipher = Cipher.getInstance("AES/ECB/PKCS7PADDING")
         cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(newKey.toByteArray(), "AES"))
-        return Base64.encodeToString(cipher.doFinal(text.toByteArray()), Base64.DEFAULT)
+        return Base64.encodeToString(cipher.doFinal(text.toByteArray()), Base64.NO_WRAP)
     }
 
     fun decryptUpdateNews(text: String): String {
         val cipher = Cipher.getInstance("AES/ECB/PKCS7PADDING")
         cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(newKey.toByteArray(), "AES"))
-        return String(cipher.doFinal(Base64.decode(text, Base64.DEFAULT)))
+        return String(cipher.doFinal(Base64.decode(text.trim(), Base64.DEFAULT)))
     }
 }

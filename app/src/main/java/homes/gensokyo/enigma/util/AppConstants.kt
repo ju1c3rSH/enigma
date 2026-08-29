@@ -6,7 +6,7 @@ object  AppConstants {
     const val getAllStudentsOfParentUrl = "https://wx.ivxiaoyuan.com/sc/basic/h5/studentQuery/getAllStudentsOfParent?queryWay=5"
     const val getMemberFlow = "https://wx.ivxiaoyuan.com/sc/consume/h5/query/getMemberFlow"
     const val loginUrl = "https://wx.ivxiaoyuan.com/sc/h5/officialAccountLoginManage/login"
-    const val getAllowSearchSchoolUrl = "https://wx.ivxiaoyuan.com/sc/om/basic/h5/schoolQuery/getAllowSearchSchool?paramStr="
+    const val getAllowSearchSchoolUrl = "https://wx.ivxiaoyuan.com/sc/om/basic/h5/schoolQuery/getAllowSearchSchool"
     const val capturePhoto = "https://wx.ivxiaoyuan.com/sc/files/capturePhoto/"
     const val personPhotoBase = "https://wx.ivxiaoyuan.com/sc/files/personPhoto/"
     const val queryUrl = "https://wx.ivxiaoyuan.com/sc/student/h5/dynamicParentViewQuery/query"

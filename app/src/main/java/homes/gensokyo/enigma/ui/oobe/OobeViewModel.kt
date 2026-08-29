@@ -64,7 +64,10 @@ class OobeViewModel : ViewModel() {
                 LogUtils.d("OobeViewModel", "search error $e")
                 null
             }
-            _state.update { it.copy(searching = false, schools = result.orEmpty()) }
+            if (result == null) {
+                LogUtils.d("OobeViewModel", "search result null for q=${q.trim()}")
+            }
+            _state.update { it.copy(searching = false, schools = result.orEmpty(), error = if (result == null) "搜索失败，请检查网络后重试" else null) }
         }
     }
 

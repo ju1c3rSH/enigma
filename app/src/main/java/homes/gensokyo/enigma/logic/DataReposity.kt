@@ -112,10 +112,14 @@ class UserRepository {
         return try {
             val paramJson = gson.toJson(mapOf("schoolName" to schoolName))
             val body = gson.toJson(mapOf("paramStr" to CipherTextUtil.encryptUpdateNews(TextUtils.removeSpaces(paramJson))))
+            LogUtils.d("fetchAllowedSearchSchools", "request schoolName=$schoolName body=${body.take(120)}")
             val response = apiService.fetchAllowedSchoolList(AppConstants.getAllowSearchSchoolUrl, headerMap, body)
-            LogUtils.d("fetchAllowedSearchSchools", "code=${response.code()} body=${response.body()?.take(300)}")
+            LogUtils.d("fetchAllowedSearchSchools", "code=${response.code()} body=${response.body()?.take(400)} err=${response.errorBody()?.string()?.take(200)}")
             if (response.isSuccessful) {
-                val decrypted = CipherTextUtil.decryptUpdateNews(response.body() ?: return null)
+                val raw = response.body() ?: return null
+                LogUtils.d("fetchAllowedSearchSchools", "raw len=${raw.length} rawHead=${raw.take(80)}")
+                val decrypted = CipherTextUtil.decryptUpdateNews(raw)
+                LogUtils.d("fetchAllowedSearchSchools", "decrypted len=${decrypted.length} head=${decrypted.take(200)}")
                 val listType = object : TypeToken<List<School>>() {}.type
                 gson.fromJson<List<School>>(decrypted, listType)
             } else {
