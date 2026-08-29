@@ -7,7 +7,7 @@ import homes.gensokyo.enigma.bean.ClassBean
 import homes.gensokyo.enigma.bean.School
 import homes.gensokyo.enigma.util.AppConstants
 import homes.gensokyo.enigma.util.LogUtils
-import homes.gensokyo.enigma.util.SettingUtils.put
+import homes.gensokyo.enigma.util.SettingUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -166,12 +166,32 @@ class OobeViewModel : ViewModel() {
                 _finished.tryEmit(false)
                 return@launch
             }
-            put("isFirst", false)
-            put("kidUuid", result.uuid)
+            // 原子化写入并同步提交，确保 MainActivity 启动时即可读到完整配置
+            val prefs = SettingUtils.sharedPreferences
+            if (prefs == null) {
+                LogUtils.d("OobeViewModel", "sharedPreferences is null, cannot save oobe result")
+                _state.update { it.copy(submitting = false, error = "存储失败，请重试") }
+                _finished.tryEmit(false)
+                return@launch
+            }
+            val editor = prefs.edit()
+            editor.putBoolean("isFirst", false)
+            editor.putString("kidUuid", result.uuid)
             val openid = result.parentStudents.firstOrNull()?.parent?.wxOaOpenid
-            openid?.let { put("wxOaOpenid", it) }
-            put("studentName", s.name.trim())
-            put("unilateralDeclarationCardNumber", s.cardNumber.trim())
+            if (!openid.isNullOrBlank()) {
+                editor.putString("wxOaOpenid", openid)
+            } else {
+                LogUtils.d("OobeViewModel", "wxOaOpenid is blank, keep existing value: ${prefs.getString("wxOaOpenid", "")}")
+            }
+            editor.putString("studentName", s.name.trim())
+            editor.putString("unilateralDeclarationCardNumber", s.cardNumber.trim())
+            val committed = editor.commit()
+            LogUtils.d("OobeViewModel", "oobe prefs committed=$committed kidUuid=${result.uuid} openid=${openid ?: "null"}")
+            if (!committed) {
+                _state.update { it.copy(submitting = false, error = "存储失败，请重试") }
+                _finished.tryEmit(false)
+                return@launch
+            }
             _state.update { it.copy(submitting = false) }
             _finished.tryEmit(true)
         }

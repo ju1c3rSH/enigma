@@ -5,12 +5,13 @@ package homes.gensokyo.enigma.util
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import homes.gensokyo.enigma.MainActivity.Companion.context
+import homes.gensokyo.enigma.MainApplication
 
 object SettingUtils {
-    //val DEVICE = "device"
-    val sharedPreferences: SharedPreferences? =
-        PreferenceManager.getDefaultSharedPreferences(context);
+    // 使用 Application context 避免持有已销毁的 Activity 实例；懒加载确保 MainApplication 已初始化
+    val sharedPreferences: SharedPreferences? by lazy {
+        PreferenceManager.getDefaultSharedPreferences(MainApplication.context)
+    }
 
     inline fun <reified T> put(name: String, value: T) {
         when (value) {

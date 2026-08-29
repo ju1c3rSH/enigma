@@ -155,12 +155,19 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     repository.fetchMemberFlow(memberFlowAllRequest, AppConstants.headerMap)
                 }
 
-                val resultBalance = resultBalanceDeferred.await()!!
+                val resultBalance = resultBalanceDeferred.await()
                 val resultMemberFlowAll = resultMemberFlowAllDeferred.await()
                 val resultMemberFlow = resultMemberFlowDeferred.await()
+
+                if (resultBalance == null || resultKid == null) {
+                    LogUtils.d("refreshData", "resultBalance is null=${resultBalance == null} resultKid is null=${resultKid == null} kidUuid=${get("kidUuid","")}")
+                    _studentData.postValue(DataState.Error("获取余额或学生列表失败，请检查网络后重试"))
+                    return@launch
+                }
                 if (!BuildConfig.DEBUG &&
                     get("unilateralDeclarationCardNumber","fake") != resultBalance.cardNumber
                 ) {
+                    LogUtils.d("UsrdataModel", "card mismatch saved=${get("unilateralDeclarationCardNumber","fake")} server=${resultBalance.cardNumber}")
                     val editor = sharedPreferences!!.edit()
                     editor.clear()
                     editor.commit()
@@ -170,43 +177,39 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     }
                     return@launch
                 }
-
-                if (resultBalance == null || resultKid == null) {
-                    _studentData.postValue(DataState.Error("err"))
-                    LogUtils.d("refreshData", "resultBalance is null")
-                    return@launch
-                }
                 val studentIndex = findStudentIndex(resultKid)
                 if (studentIndex < 0) {
-                    _studentData.postValue(DataState.Error("err"))
+                    LogUtils.d("refreshData", "studentIndex not found kidUuid=${get("kidUuid","")} name=${get("studentName","")} resultKid size=${resultKid.size}")
+                    _studentData.postValue(DataState.Error("未找到学生信息，请重新完成引导"))
                     return@launch
                 }
-                if (resultMemberFlow != null) {
-                    val studentName = resultKid[studentIndex].studentName ?: "默认姓名"
-                    val className = resultKid[studentIndex].classes.className ?: ""
-                    val studentNamePinyin = resultKid[studentIndex].studentNamePinyin ?: ""
-                    val headSculpture = resultKid[studentIndex].headSculpture ?: ""
-                    //排序前置到后台线程，UI 不再每次重组重排
-                    val sortedFlow = resultMemberFlow.copy(datas = resultMemberFlow.datas?.sortedByDescending { it.consumeTime })
-                    val sortedFlowAll = resultMemberFlowAll?.copy(datas = resultMemberFlowAll.datas?.sortedByDescending { it.consumeTime })
-                    _memberFlow.postValue(sortedFlow)
-                    _memberFlowAll.postValue(sortedFlowAll)
-                    _studentData.postValue(
-                        DataState.Success(
-                            UserDataBean(
-                                balance = resultBalance.balance.toString(),
-                                studentName = studentName,
-                                cardNumber = resultBalance.cardNumber,
-                                consumptionCount = resultMemberFlow.total.toString(),
-                                studentNamePinyin = studentNamePinyin,
-                                headSculpture = headSculpture,
-                                className = className,
-                            )
+                // memberFlow 允许为空（网络抖动），仍可展示余额与学籍信息
+                val studentName = resultKid[studentIndex].studentName ?: "默认姓名"
+                val className = resultKid[studentIndex].classes.className ?: ""
+                val studentNamePinyin = resultKid[studentIndex].studentNamePinyin ?: ""
+                val headSculpture = resultKid[studentIndex].headSculpture ?: ""
+                //排序前置到后台线程，UI 不再每次重组重排
+                val sortedFlow = resultMemberFlow?.copy(datas = resultMemberFlow.datas?.sortedByDescending { it.consumeTime })
+                val sortedFlowAll = resultMemberFlowAll?.copy(datas = resultMemberFlowAll.datas?.sortedByDescending { it.consumeTime })
+                sortedFlow?.let { _memberFlow.postValue(it) }
+                sortedFlowAll?.let { _memberFlowAll.postValue(it) }
+                val consumptionCount = resultMemberFlow?.total?.toString() ?: "0"
+                _studentData.postValue(
+                    DataState.Success(
+                        UserDataBean(
+                            balance = resultBalance.balance.toString(),
+                            studentName = studentName,
+                            cardNumber = resultBalance.cardNumber,
+                            consumptionCount = consumptionCount,
+                            studentNamePinyin = studentNamePinyin,
+                            headSculpture = headSculpture,
+                            className = className,
                         )
                     )
-                }
+                )
             } catch (e: Exception) {
-                _studentData.postValue(e.message?.let { DataState.Error(it) })
+                LogUtils.d("refreshData", "exception ${e.message} ${e.stackTraceToString().take(300)}")
+                _studentData.postValue(DataState.Error(e.message ?: "网络异常"))
             } finally {
                 refreshing.set(false)
             }
