@@ -58,9 +58,9 @@ jobs:
         files: app/build/outputs/apk/release/*.apk
         generate_release_notes: true
         body: |
-          ## EN!GMA 2.4.2 @可丽饼
+          ## EN!GMA 2.4.3 @可丽饼
 
-          - 修复 OOBE 后无法加载用户信息（SettingUtils 改持 Application context、提交改为 commit 原子化、去除 balance !! 空指针）
-          - 修复 OOBE 搜索学校无结果（getAllowSearchSchoolUrl 去除多余 ?paramStr=、encrypt 改 NO_WRAP、增加链路日志）
-          - 2.4.1/2.4.2 为同 @可丽饼 产线的修复版本
+          - 修复 R8 混淆导致 OOBE 搜索学校报网络错误（补 Gson TypeToken keep 规则，搜索失败原因透传 UI）
+          - 主界面与 OOBE 支持四角连点隐藏手势豁免卡号校验
+          - 2.4.3 为 @可丽饼 产线的修复与功能版本
         fail_on_unmatched_files: true
