@@ -65,9 +65,15 @@ class OobeViewModel : ViewModel() {
                 null
             }
             if (result == null) {
-                LogUtils.d("OobeViewModel", "search result null for q=${q.trim()}")
+                LogUtils.d("OobeViewModel", "search result null for q=${q.trim()} reason=${repository.lastError}")
             }
-            _state.update { it.copy(searching = false, schools = result.orEmpty(), error = if (result == null) "搜索失败，请检查网络后重试" else null) }
+            _state.update {
+                it.copy(
+                    searching = false,
+                    schools = result.orEmpty(),
+                    error = if (result == null) "搜索失败：${repository.lastError ?: "未知原因"}" else null
+                )
+            }
         }
     }
 

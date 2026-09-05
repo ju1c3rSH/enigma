@@ -19,8 +19,8 @@ android {
         applicationId = "homes.gensokyo.enigma"
         minSdk = 24
         targetSdk = 34
-        versionCode = 44
-        versionName = "2.4.2"
+        versionCode = 45
+        versionName = "2.4.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionNameSuffix = "@可丽饼"

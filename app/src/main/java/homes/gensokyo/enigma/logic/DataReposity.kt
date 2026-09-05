@@ -25,6 +25,10 @@ class UserRepository {
     //private val apiService = NetworkUtils.retrofit.create(ApiService::class.java)
     private val gson = Gson()
 
+    // 记录最近一次请求失败的真实原因，供上层透传到 UI，避免被笼统的"网络错误"掩盖
+    var lastError: String? = null
+        private set
+
      suspend fun fetchRole(cipherText:String, headerMap : Map<String, String>): String? {
         return try {
             //val cipherText = CiperTextUtil.encrypt(AppConstants.wxOa)
@@ -109,6 +113,7 @@ class UserRepository {
         }
     }
     suspend fun fetchAllowedSearchSchools(schoolName: String, headerMap: Map<String, String>): List<School>? {
+        lastError = null
         return try {
             val paramJson = gson.toJson(mapOf("schoolName" to schoolName))
             val body = gson.toJson(mapOf("paramStr" to CipherTextUtil.encryptUpdateNews(TextUtils.removeSpaces(paramJson))))
@@ -116,16 +121,22 @@ class UserRepository {
             val response = apiService.fetchAllowedSchoolList(AppConstants.getAllowSearchSchoolUrl, headerMap, body)
             LogUtils.d("fetchAllowedSearchSchools", "code=${response.code()} body=${response.body()?.take(400)} err=${response.errorBody()?.string()?.take(200)}")
             if (response.isSuccessful) {
-                val raw = response.body() ?: return null
+                val raw = response.body()
+                if (raw == null) {
+                    lastError = "响应体为空"
+                    return null
+                }
                 LogUtils.d("fetchAllowedSearchSchools", "raw len=${raw.length} rawHead=${raw.take(80)}")
                 val decrypted = CipherTextUtil.decryptUpdateNews(raw)
                 LogUtils.d("fetchAllowedSearchSchools", "decrypted len=${decrypted.length} head=${decrypted.take(200)}")
                 val listType = object : TypeToken<List<School>>() {}.type
                 gson.fromJson<List<School>>(decrypted, listType)
             } else {
+                lastError = "HTTP ${response.code()}"
                 null
             }
         } catch (e: Exception) {
+            lastError = "${e.javaClass.simpleName}: ${e.message}"
             Log.e("fetchAllowedSearchSchools", "Error", e)
             null
         }

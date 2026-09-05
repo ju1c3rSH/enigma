@@ -18,6 +18,12 @@
 -keep class homes.gensokyo.enigma.bean.** { *; }
 -keep class homes.gensokyo.enigma.logic.database.model.** { *; }
 
+# Gson TypeToken：R8 full mode 会剥掉匿名子类的泛型签名(Signature)，导致 fromJson 拿到错误类型
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken { *; }
+-keep,allowobfuscation class com.google.gson.Gson$TypeToken
+-dontnote com.google.gson.internal.UnsafeAllocator
+
 # Retrofit 接口方法依赖注解与返回类型做动态代理
 -keep,allowobfuscation,allowshrinking interface homes.gensokyo.enigma.interface.** { *; }
 -keep class kotlin.coroutines.Continuation
