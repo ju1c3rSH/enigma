@@ -8,11 +8,14 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,6 +29,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +45,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import homes.gensokyo.enigma.util.SettingUtils
+import homes.gensokyo.enigma.util.TextUtils.toast
 
 @Composable
 fun SectionTitle(text: String, modifier: Modifier = Modifier) {
@@ -269,6 +277,41 @@ fun AvatarImage(
                 modifier = Modifier
                     .size(size)
                     .clip(CircleShape)
+            )
+        }
+    }
+}
+
+@Composable
+fun KonamiCornerTaps() {
+    var progress by remember { mutableStateOf(0) }
+    val corners = listOf(Alignment.TopStart, Alignment.TopEnd, Alignment.BottomStart, Alignment.BottomEnd)
+    Box(Modifier.fillMaxSize()) {
+        corners.forEachIndexed { index, align ->
+            Box(
+                Modifier
+                    .align(align)
+                    .size(48.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        progress = when {
+                            index == progress -> progress + 1
+                            index == 0 -> 1
+                            else -> 0
+                        }
+                        if (progress >= 4) {
+                            progress = 0
+                            val exempted = SettingUtils.get("disableCardCheck", false)
+                            SettingUtils.put("disableCardCheck", !exempted)
+                            if (!exempted) {
+                                "Konami Code Detected".toast()
+                            } else {
+                                "Konami Code Detected\n卡号校验已恢复".toast()
+                            }
+                        }
+                    }
             )
         }
     }

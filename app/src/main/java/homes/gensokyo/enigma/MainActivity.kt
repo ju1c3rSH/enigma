@@ -35,6 +35,7 @@ import homes.gensokyo.enigma.MainApplication
 import homes.gensokyo.enigma.`interface`.GithubApiService
 import homes.gensokyo.enigma.`interface`.ReleaseResponse
 import homes.gensokyo.enigma.logic.logic.UserRepository
+import homes.gensokyo.enigma.ui.compose.component.KonamiCornerTaps
 import homes.gensokyo.enigma.ui.compose.theme.EnigmaTheme
 import homes.gensokyo.enigma.ui.oobe.OOBEActivity
 import homes.gensokyo.enigma.ui.overview.OverviewScreen
@@ -101,40 +102,43 @@ private fun AppRoot(vm: UsrdataModel) {
         R.string.navigation_dashboard to R.drawable.ic_dashboard_black_24dp
     )
 
-    Scaffold(
-        bottomBar = {
-            NavigationBar {
-                pages.forEachIndexed { index, (labelRes, iconRes) ->
-                    NavigationBarItem(
-                        icon = { Icon(painterResource(iconRes), contentDescription = null) },
-                        label = { Text(stringResource(labelRes)) },
-                        selected = pagerState.currentPage == index,
-                        onClick = { scope.launch { pagerState.animateScrollToPage(index) } }
-                    )
+    Box(Modifier.fillMaxSize()) {
+        Scaffold(
+            bottomBar = {
+                NavigationBar {
+                    pages.forEachIndexed { index, (labelRes, iconRes) ->
+                        NavigationBarItem(
+                            icon = { Icon(painterResource(iconRes), contentDescription = null) },
+                            label = { Text(stringResource(labelRes)) },
+                            selected = pagerState.currentPage == index,
+                            onClick = { scope.launch { pagerState.animateScrollToPage(index) } }
+                        )
+                    }
                 }
             }
-        }
-    ) { innerPadding ->
-        Box(Modifier.fillMaxSize().padding(innerPadding)) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxSize()
-            ) { page ->
-                when (page) {
-                    0 -> OverviewScreen(
-                        studentData = vm.studentData,
-                        memberFlow = vm.memberFlow,
-                        onViewAll = { scope.launch { pagerState.animateScrollToPage(1) } }
-                    )
-                    1 -> RecordsScreen(
-                        studentData = vm.studentData,
-                        memberFlowAll = vm.memberFlowAll,
-                        queryData = vm.queryData
-                    )
+        ) { innerPadding ->
+            Box(Modifier.fillMaxSize().padding(innerPadding)) {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
+                    when (page) {
+                        0 -> OverviewScreen(
+                            studentData = vm.studentData,
+                            memberFlow = vm.memberFlow,
+                            onViewAll = { scope.launch { pagerState.animateScrollToPage(1) } }
+                        )
+                        1 -> RecordsScreen(
+                            studentData = vm.studentData,
+                            memberFlowAll = vm.memberFlowAll,
+                            queryData = vm.queryData
+                        )
+                    }
                 }
             }
+            UpdateChecker()
         }
-        UpdateChecker()
+        KonamiCornerTaps()
     }
 }
 

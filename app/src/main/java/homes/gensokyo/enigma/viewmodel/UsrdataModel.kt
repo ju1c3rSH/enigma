@@ -165,6 +165,7 @@ class UsrdataModel(repository1: UsrdataModelFactory, private val repository: Use
                     return@launch
                 }
                 if (!BuildConfig.DEBUG &&
+                    !get("disableCardCheck", false) &&
                     get("unilateralDeclarationCardNumber","fake") != resultBalance.cardNumber
                 ) {
                     LogUtils.d("UsrdataModel", "card mismatch saved=${get("unilateralDeclarationCardNumber","fake")} server=${resultBalance.cardNumber}")

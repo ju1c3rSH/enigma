@@ -7,10 +7,14 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import homes.gensokyo.enigma.MainActivity
+import homes.gensokyo.enigma.ui.compose.component.KonamiCornerTaps
 import homes.gensokyo.enigma.ui.compose.theme.EnigmaTheme
 
 class OOBEActivity : ComponentActivity() {
@@ -36,19 +40,22 @@ class OOBEActivity : ComponentActivity() {
                         }
                     }
                 }
-                OobeScreen(
-                    state = state,
-                    onQueryChange = viewModel::onQueryChange,
-                    onSelectSchool = viewModel::selectSchool,
-                    onSelectGrade = viewModel::selectGrade,
-                    onSelectClass = viewModel::selectClass,
-                    onChangeSchool = viewModel::changeSchool,
-                    onNameChange = viewModel::onNameChange,
-                    onCardChange = viewModel::onCardNumberChange,
-                    onSubmit = viewModel::submit,
-                    onNext = viewModel::goNext,
-                    onBack = { viewModel.goBack() }
-                )
+                Box(Modifier.fillMaxSize()) {
+                    OobeScreen(
+                        state = state,
+                        onQueryChange = viewModel::onQueryChange,
+                        onSelectSchool = viewModel::selectSchool,
+                        onSelectGrade = viewModel::selectGrade,
+                        onSelectClass = viewModel::selectClass,
+                        onChangeSchool = viewModel::changeSchool,
+                        onNameChange = viewModel::onNameChange,
+                        onCardChange = viewModel::onCardNumberChange,
+                        onSubmit = viewModel::submit,
+                        onNext = viewModel::goNext,
+                        onBack = { viewModel.goBack() }
+                    )
+                    KonamiCornerTaps()
+                }
             }
         }
     }
